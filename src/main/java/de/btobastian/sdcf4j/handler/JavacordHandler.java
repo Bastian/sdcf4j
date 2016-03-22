@@ -83,13 +83,13 @@ public class JavacordHandler extends CommandHandler {
      * @param api The api.
      * @param message The received message.
      */
-    private void handleMessageCreate(DiscordAPI api, Message message) {
+    private void handleMessageCreate(DiscordAPI api, final Message message) {
         if (message.getAuthor().isYourself()) {
             return;
         }
         String[] splitMessage = message.getContent().split(" ");
         String commandString = splitMessage[0];
-        SimpleCommand command = commands.get(commandString.toLowerCase());
+        final SimpleCommand command = commands.get(commandString.toLowerCase());
         if (command == null) {
             return;
         }
@@ -105,9 +105,9 @@ public class JavacordHandler extends CommandHandler {
             return;
         }
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
-        Method method = command.getMethod();
+        final Method method = command.getMethod();
         Class<?>[] parameterTypes = method.getParameterTypes();
-        Object[] parameters = new Object[parameterTypes.length];
+        final Object[] parameters = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) { // check all parameters
             Class<?> type = parameterTypes[i];
             if (type == String.class) {
@@ -129,14 +129,31 @@ public class JavacordHandler extends CommandHandler {
                 parameters[i] = null;
             }
         }
-        Object reply = null;
-        try {
-            reply = method.invoke(command.getExecutor(), parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            logger.warn("Cannot invoke method {}!", method.getName(), e);
-        }
-        if (reply != null && reply instanceof String) {
-            message.reply((String) reply);
+        if (command.getCommandAnnotation().async()) {
+            api.getThreadPool().getExecutorService().submit(new Runnable() {
+                @Override
+                public void run() {
+                    Object reply = null;
+                    try {
+                        reply = method.invoke(command.getExecutor(), parameters);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        logger.warn("Cannot invoke method {}!", method.getName(), e);
+                    }
+                    if (reply != null && reply instanceof String) {
+                        message.reply((String) reply);
+                    }
+                }
+            });
+        } else {
+            Object reply = null;
+            try {
+                reply = method.invoke(command.getExecutor(), parameters);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                logger.warn("Cannot invoke method {}!", method.getName(), e);
+            }
+            if (reply != null && reply instanceof String) {
+                message.reply((String) reply);
+            }
         }
     }
 
