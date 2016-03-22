@@ -30,6 +30,7 @@ public abstract class CommandHandler {
 
     protected final HashMap<String, SimpleCommand> commands = new HashMap<>();
     protected final List<SimpleCommand> commandList = new ArrayList<>();
+    private final HashMap<String, List<String>> permissions = new HashMap<>();
 
     /**
      * Registers an executor.
@@ -53,6 +54,65 @@ public abstract class CommandHandler {
             // we need a list, too, because a HashMap is not ordered.
             commandList.add(command);
         }
+    }
+
+    /**
+     * Adds a permission for the user with the given id.
+     *
+     * @param userId The id of the user.
+     * @param permission The permission to add.
+     */
+    public void addPermission(String userId, String permission) {
+        List<String> permissions = this.permissions.get(userId);
+        if (permissions == null) {
+            permissions = new ArrayList<>();
+            this.permissions.put(userId, permissions);
+        }
+        permissions.add(permission);
+    }
+
+    /**
+     * Checks if the user with the given id has the required permission.
+     *
+     * @param userId The id of the user.
+     * @param permission The permission to check.
+     * @return If the user has the given permission.
+     */
+    public boolean hasPermission(String userId, String permission) {
+        if (permission.equals("none") || permission.equals("")) {
+            return true;
+        }
+        List<String> permissions = this.permissions.get(userId);
+        if (permissions == null) {
+            return false;
+        }
+        for (String perm : permissions) {
+            // user has the permission
+            if (checkPermission(perm, permission)) {
+                return true;
+            }
+        }
+        // user hasn't enough permissions
+        return false;
+    }
+
+    /**
+     * Checks if you are allowed to do something with the given permission.
+     *
+     * @param has The permission the user has.
+     * @param required The permission which is required.
+     * @return If you can use the command with the given permission.
+     */
+    private boolean checkPermission(String has, String required) {
+        String[] splitHas = has.split("\\.");
+        String[] splitRequired = required.split("\\.");
+        int lower = splitHas.length > splitRequired.length ? splitRequired.length : splitHas.length;
+        for (int i = 0; i < lower; i++) {
+            if (!splitHas[i].equalsIgnoreCase(splitRequired[i])) {
+                return splitHas[i].equals("*");
+            }
+        }
+        return splitRequired.length == splitHas.length;
     }
 
     /**

@@ -57,6 +57,27 @@ public class JavacordHandler extends CommandHandler {
     }
 
     /**
+     * Adds a permission for the user.
+     *
+     * @param user The user.
+     * @param permission The permission to add.
+     */
+    public void addPermission(User user, String permission) {
+        addPermission(user.getId(), permission);
+    }
+
+    /**
+     * Checks if the user has the required permission.
+     *
+     * @param user The user.
+     * @param permission The permission to check.
+     * @return If the user has the given permission.
+     */
+    public boolean hasPermission(User user, String permission) {
+        return hasPermission(user.getId(), permission);
+    }
+
+    /**
      * Handles a received message.
      *
      * @param api The api.
@@ -78,11 +99,16 @@ public class JavacordHandler extends CommandHandler {
         if (!message.isPrivateMessage() && !command.getCommandAnnotation().channelMessages()) {
             return;
         }
+        if (!hasPermission(message.getAuthor(), command.getCommandAnnotation().requiredPermissions())) {
+            // TODO custom message
+            message.reply("You are not allowed to use this command!");
+            return;
+        }
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
         Method method = command.getMethod();
         Class<?>[] parameterTypes = method.getParameterTypes();
         Object[] parameters = new Object[parameterTypes.length];
-        for (int i = 0; i < parameterTypes.length; i++) {
+        for (int i = 0; i < parameterTypes.length; i++) { // check all parameters
             Class<?> type = parameterTypes[i];
             if (type == String.class) {
                 parameters[i] = commandString;
