@@ -6,6 +6,7 @@
 
     <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0</version>
     <build>
         <plugins>
@@ -19,33 +20,10 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>javacord-repo</id>
-            <url>http://repo.bastian-oppermann.de</url>
-        </repository>
-        <!-- JDA uses jcenter -->
-        <repository>
-            <id>jcenter</id>
-            <name>jcenter-bintray</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <!-- Javacord -->
-        <dependency>
-            <groupId>de.btobastian.javacord</groupId>
-            <artifactId>javacord</artifactId>
-            <version>2.0.9</version>
-        </dependency>
-        <!-- JDA -->
-        <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>1.3.0_188</version>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>sdcf4j-javacord</module>
+        <module>sdcf4j-jda</module>
+        <module>sdcf4j-discord4j</module>
+    </modules>
     
 </project>
