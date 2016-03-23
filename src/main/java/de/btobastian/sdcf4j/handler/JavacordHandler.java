@@ -141,8 +141,8 @@ public class JavacordHandler extends CommandHandler {
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         logger.warn("Cannot invoke method {}!", method.getName(), e);
                     }
-                    if (reply != null && reply instanceof String) {
-                        message.reply((String) reply);
+                    if (reply != null) {
+                        message.reply(String.valueOf(reply));
                     }
                 }
             });
