@@ -26,6 +26,7 @@ import de.btobastian.javacord.entities.message.MessageReceiver;
 import de.btobastian.javacord.listener.message.MessageCreateListener;
 import de.btobastian.javacord.utils.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
+import de.btobastian.sdcf4j.Sdcf4jMessage;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -100,8 +101,9 @@ public class JavacordHandler extends CommandHandler {
             return;
         }
         if (!hasPermission(message.getAuthor(), command.getCommandAnnotation().requiredPermissions())) {
-            // TODO custom message
-            message.reply("You are not allowed to use this command!");
+            if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
+                message.reply(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
+            }
             return;
         }
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
