@@ -24,7 +24,6 @@ import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.MissingPermissionsException;
-import sx.blah.discord.handle.EventSubscriber;
 import sx.blah.discord.handle.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
