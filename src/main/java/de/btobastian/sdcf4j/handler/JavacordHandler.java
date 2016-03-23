@@ -20,6 +20,7 @@ package de.btobastian.sdcf4j.handler;
 
 import de.btobastian.javacord.DiscordAPI;
 import de.btobastian.javacord.entities.Channel;
+import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.MessageReceiver;
@@ -126,6 +127,10 @@ public class JavacordHandler extends CommandHandler {
                 parameters[i] = message.getAuthor();
             } else if (type == MessageReceiver.class) {
                 parameters[i] = message.getReceiver();
+            } else if (type == Server.class) {
+                if (message.getChannelReceiver() != null) {
+                    parameters[i] = message.getChannelReceiver().getServer();
+                }
             } else {
                 // unknown type
                 parameters[i] = null;
