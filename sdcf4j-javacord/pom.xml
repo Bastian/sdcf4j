@@ -5,10 +5,12 @@
     <parent>
         <artifactId>sdcf4j</artifactId>
         <groupId>de.btobastian.sdcf4j</groupId>
-        <version>1.0.0</version>
+        <version>${version}</version>
     </parent>
+    <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j-javacord</artifactId>
 
     <repositories>
@@ -27,9 +29,38 @@
         </dependency>
         <dependency>
             <groupId>de.btobastian.sdcf4j</groupId>
-            <artifactId>sdcf4j</artifactId>
-            <version>1.0.0</version>
+            <artifactId>sdcf4j-core</artifactId>
+            <version>${version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Maven shade plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>false</minimizeJar>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <!-- Include core lib -->
+                                <includes>
+                                    <include>de.btobastian.sdcf4j:sdcf4j-core</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

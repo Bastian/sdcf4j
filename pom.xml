@@ -7,11 +7,22 @@
     <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>${version}</version>
+
+    <properties>
+        <version>1.0.0</version>
+    </properties>
+
+    <modules>
+        <module>sdcf4j-core</module>
+        <module>sdcf4j-javacord</module>
+        <module>sdcf4j-jda</module>
+        <module>sdcf4j-discord4j</module>
+    </modules>
+
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.7</source>
@@ -19,11 +30,24 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <extensions>
+            <!-- We upload our repo using ftp -->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
     </build>
-    <modules>
-        <module>sdcf4j-javacord</module>
-        <module>sdcf4j-jda</module>
-        <module>sdcf4j-discord4j</module>
-    </modules>
-    
+
+    <distributionManagement>
+        <!-- The javacord repository -->
+        <repository>
+            <id>javacord-repo</id>
+            <name>Javacord Repository</name>
+            <url>ftp://bastian-oppermann.de/</url>
+        </repository>
+    </distributionManagement>
+
 </project>
