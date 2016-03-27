@@ -7,10 +7,11 @@
     <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j</artifactId>
     <packaging>pom</packaging>
-    <version>${version}</version>
+    <version>1.0.0</version>
 
     <properties>
-        <version>1.0.0</version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <modules>
@@ -23,7 +24,10 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <!-- We want to support Java 7 and newer -->
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -42,7 +46,7 @@
     </build>
 
     <distributionManagement>
-        <!-- The javacord repository -->
+        <!-- My repository which is the same I use for Javacord -->
         <repository>
             <id>javacord-repo</id>
             <name>Javacord Repository</name>

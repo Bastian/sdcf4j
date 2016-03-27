@@ -5,12 +5,11 @@
     <parent>
         <artifactId>sdcf4j</artifactId>
         <groupId>de.btobastian.sdcf4j</groupId>
-        <version>${version}</version>
+        <version>1.0.0</version>
     </parent>
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j-core</artifactId>
 
 </project>
