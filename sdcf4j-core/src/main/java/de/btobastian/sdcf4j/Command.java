@@ -53,7 +53,7 @@ public @interface Command {
      *
      * @return The description of the command.
      */
-    String description();
+    String description() default "none";
 
     /**
      * Gets the usage of the command.
