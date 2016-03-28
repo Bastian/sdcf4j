@@ -1,5 +1,5 @@
 # sdcf4j
-A **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting Javacord, JDA and Discord4J
+A **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J)
 
 #Maven
 ```xml
