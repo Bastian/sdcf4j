@@ -20,6 +20,7 @@ package de.btobastian.sdcf4j;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -94,6 +95,16 @@ public abstract class CommandHandler {
         }
         // user hasn't enough permissions
         return false;
+    }
+
+    /**
+     * Gets a list with all commands in the order they were registered.
+     * This is useful for automatic help commands.
+     *
+     * @return A list with all commands the the order they were registered.
+     */
+    public List<SimpleCommand> getCommands() {
+        return Collections.unmodifiableList(commandList);
     }
 
     /**
