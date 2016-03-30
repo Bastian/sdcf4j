@@ -18,6 +18,7 @@
  */
 package de.btobastian.sdcf4j.handler;
 
+import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
 import net.dv8tion.jda.JDA;
@@ -79,35 +80,94 @@ public class JDAHandler extends CommandHandler {
      * @param event The MessageReceivedEvent.
      */
     private void handleMessageCreate(final MessageReceivedEvent event) {
-        if (event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) {
+        JDA jda = event.getJDA();
+        if (event.getAuthor() == jda.getSelfInfo()) {
             return;
         }
-        String[] splitMessage = event.getMessage().getContent().split(" ");
+        String[] splitMessage = event.getMessage().getRawContent().split(" ");
         String commandString = splitMessage[0];
-        final SimpleCommand command = commands.get(commandString.toLowerCase());
+        SimpleCommand command = commands.get(commandString.toLowerCase());
         if (command == null) {
+            // maybe it requires a mention
+            if (splitMessage.length > 1) {
+                command = commands.get(splitMessage[1].toLowerCase());
+                if (command == null || !command.getCommandAnnotation().requiresMention()) {
+                    return;
+                }
+                // remove the first which is the mention
+                splitMessage = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
+            } else {
+                return;
+            }
+        }
+        Command commandAnnotation = command.getCommandAnnotation();
+        if (commandAnnotation.requiresMention() && !commandString.equals(jda.getSelfInfo().getAsMention())) {
             return;
         }
-        if (event.isPrivate() && !command.getCommandAnnotation().privateMessages()) {
+        if (event.isPrivate() && !commandAnnotation.privateMessages()) {
             return;
         }
-        if (!event.isPrivate() && !command.getCommandAnnotation().channelMessages()) {
+        if (!event.isPrivate() && !commandAnnotation.channelMessages()) {
             return;
         }
-        if (!hasPermission(event.getAuthor(), command.getCommandAnnotation().requiredPermissions())) {
+        if (!hasPermission(event.getAuthor(), commandAnnotation.requiredPermissions())) {
             if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
                 event.getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
             }
             return;
         }
+        final Object[] parameters = getParameters(splitMessage, command, event);
+        if (commandAnnotation.async()) {
+            final SimpleCommand commandFinal = command;
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    invokeMethod(commandFinal, event, parameters);
+                }
+            });
+            t.setDaemon(true);
+            t.start();
+        } else {
+            invokeMethod(command, event, parameters);
+        }
+    }
+
+    /**
+     * Invokes the method of the command.
+     *
+     * @param command The command.
+     * @param event The event.
+     * @param parameters The parameters for the method.
+     */
+    private void invokeMethod(SimpleCommand command, MessageReceivedEvent event, Object[] parameters) {
+        Method method = command.getMethod();
+        Object reply = null;
+        try {
+            reply = method.invoke(command.getExecutor(), parameters);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            SimpleLog.getLog(getClass().getName()).log(e);
+        }
+        if (reply != null) {
+            event.getChannel().sendMessage(String.valueOf(reply));
+        }
+    }
+
+    /**
+     * Gets the parameters which are used to invoke the executor's method.
+     *
+     * @param splitMessage The spit message (index 0: command, index > 0: arguments)
+     * @param command The command.
+     * @param event The event.
+     * @return The parameters which are used to invoke the executor's method.
+     */
+    private Object[] getParameters(String[] splitMessage, SimpleCommand command, MessageReceivedEvent event) {
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
-        final Method method = command.getMethod();
-        Class<?>[] parameterTypes = method.getParameterTypes();
+        Class<?>[] parameterTypes = command.getMethod().getParameterTypes();
         final Object[] parameters = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) { // check all parameters
             Class<?> type = parameterTypes[i];
             if (type == String.class) {
-                parameters[i] = commandString;
+                parameters[i] = splitMessage[0];
             } else if (type == String[].class) {
                 parameters[i] = args;
             } else if (type == MessageReceivedEvent.class) {
@@ -131,34 +191,7 @@ public class JDAHandler extends CommandHandler {
                 parameters[i] = null;
             }
         }
-        if (command.getCommandAnnotation().async()) {
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Object reply = null;
-                    try {
-                        reply = method.invoke(command.getExecutor(), parameters);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        SimpleLog.getLog(getClass().getName()).log(e);
-                    }
-                    if (reply != null) {
-                        event.getChannel().sendMessage(String.valueOf(reply));
-                    }
-                }
-            });
-            t.setDaemon(true);
-            t.start();
-        } else {
-            Object reply = null;
-            try {
-                reply = method.invoke(command.getExecutor(), parameters);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                SimpleLog.getLog(getClass().getName()).log(e);
-            }
-            if (reply != null) {
-                event.getChannel().sendMessage(String.valueOf(reply));
-            }
-        }
+        return parameters;
     }
 
 }

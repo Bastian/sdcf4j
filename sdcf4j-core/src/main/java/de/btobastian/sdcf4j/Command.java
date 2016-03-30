@@ -84,4 +84,12 @@ public @interface Command {
      */
     boolean async() default false;
 
+    /**
+     * Gets whether the bot has to be mentioned to react to a command.
+     * This would look like <code>@botname alias</code>
+     *
+     * @return Whether the bot has to be mentioned to react to a command.
+     */
+    boolean requiresMention() default false;
+
 }
