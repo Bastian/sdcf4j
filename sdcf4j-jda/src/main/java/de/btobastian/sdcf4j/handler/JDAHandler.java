@@ -164,10 +164,18 @@ public class JDAHandler extends CommandHandler {
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
         Class<?>[] parameterTypes = command.getMethod().getParameterTypes();
         final Object[] parameters = new Object[parameterTypes.length];
+        int stringCounter = 0;
         for (int i = 0; i < parameterTypes.length; i++) { // check all parameters
             Class<?> type = parameterTypes[i];
             if (type == String.class) {
-                parameters[i] = splitMessage[0];
+                if (stringCounter++ == 0) {
+                    parameters[i] = splitMessage[0]; // the first split is the command
+                } else {
+                    if (args.length + 2 > stringCounter) {
+                        // the first string parameter is the command, the other ones are the arguments
+                        parameters[i] = args[stringCounter - 2];
+                    }
+                }
             } else if (type == String[].class) {
                 parameters[i] = args;
             } else if (type == MessageReceivedEvent.class) {
@@ -186,12 +194,60 @@ public class JDAHandler extends CommandHandler {
                 parameters[i] = event.getGuild();
             } else if (type == Integer.class || type == int.class) {
                 parameters[i] = event.getResponseNumber();
+            } else if (type == Object[].class) {
+                parameters[i] = getObjectsFromString(event.getJDA(), args);
             } else {
                 // unknown type
                 parameters[i] = null;
             }
         }
         return parameters;
+    }
+
+    /**
+     * Tries to get objects (like channel, user, integer) from the given strings.
+     *
+     * @param jda The jda object.
+     * @param args The string array.
+     * @return An object array.
+     */
+    private Object[] getObjectsFromString(JDA jda, String[] args) {
+        Object[] objects = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            objects[i] = getObjectFromString(jda, args[i]);
+        }
+        return objects;
+    }
+
+    /**
+     * Tries to get an object (like channel, user, integer) from the given string.
+     *
+     * @param jda The jda object.
+     * @param arg The string.
+     * @return The object.
+     */
+    private Object getObjectFromString(JDA jda, String arg) {
+        try {
+            // test int
+            return Integer.valueOf(arg);
+        } catch (NumberFormatException e) {}
+        // test user
+        if (arg.matches("<@([0-9]*)>")) {
+            String id = arg.substring(2, arg.length() - 1);
+            User user = jda.getUserById(id);
+            if (user != null) {
+                return user;
+            }
+        }
+        // test channel
+        if (arg.matches("<#([0-9]*)>")) {
+            String id = arg.substring(2, arg.length() - 1);
+            Channel channel = jda.getTextChannelById(id);
+            if (channel != null) {
+                return channel;
+            }
+        }
+        return arg;
     }
 
 }
