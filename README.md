@@ -12,14 +12,14 @@ A **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting 
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <artifactId>sdcf4j-core</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
 </dependency>
 <!-- The module for your prefered lib-->
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-discord4j -->
   <artifactId>sdcf4j-javacord</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
@@ -28,7 +28,7 @@ A **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting 
 * [Javacord server](https://discord.gg/0qJ2jjyneLEgG7y3)
 * [DiscordAPI #java_javacord channel](https://discord.gg/0SBTUU1wZTVXVKEo)
 
-You can find me on one of these servers/channels. Fell free to contact me if you need help. :)
+You can find me on one of these servers/channels. Feel free to contact me if you need help. :)
 
 #Download
 For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/lastSuccessfulBuild/)
