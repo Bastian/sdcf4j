@@ -168,10 +168,18 @@ public class Discord4JHandler extends CommandHandler {
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
         Class<?>[] parameterTypes = command.getMethod().getParameterTypes();
         final Object[] parameters = new Object[parameterTypes.length];
+        int stringCounter = 0;
         for (int i = 0; i < parameterTypes.length; i++) { // check all parameters
             Class<?> type = parameterTypes[i];
             if (type == String.class) {
-                parameters[i] = splitMessage[0];
+                if (stringCounter++ == 0) {
+                    parameters[i] = splitMessage[0]; // the first split is the command
+                } else {
+                    if (args.length + 2 > stringCounter) {
+                        // the first string parameter is the command, the other ones are the arguments
+                        parameters[i] = args[stringCounter - 2];
+                    }
+                }
             } else if (type == String[].class) {
                 parameters[i] = args;
             } else if (type == IMessage.class) {
@@ -184,12 +192,60 @@ public class Discord4JHandler extends CommandHandler {
                 parameters[i] = event.getMessage().getAuthor();
             } else if (type == IGuild.class) {
                 parameters[i] = event.getMessage().getChannel().getGuild();
+            } else if (type == Object[].class) {
+                parameters[i] = getObjectsFromString(event.getClient(), args);
             } else {
                 // unknown type
                 parameters[i] = null;
             }
         }
         return parameters;
+    }
+
+    /**
+     * Tries to get objects (like channel, user, integer) from the given strings.
+     *
+     * @param client The client.
+     * @param args The string array.
+     * @return An object array.
+     */
+    private Object[] getObjectsFromString(IDiscordClient client, String[] args) {
+        Object[] objects = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            objects[i] = getObjectFromString(client, args[i]);
+        }
+        return objects;
+    }
+
+    /**
+     * Tries to get an object (like channel, user, integer) from the given string.
+     *
+     * @param client The client.
+     * @param arg The string.
+     * @return The object.
+     */
+    private Object getObjectFromString(IDiscordClient client, String arg) {
+        try {
+            // test int
+            return Integer.valueOf(arg);
+        } catch (NumberFormatException e) {}
+        // test user
+        if (arg.matches("<@([0-9]*)>")) {
+            String id = arg.substring(2, arg.length() - 1);
+            IUser user = client.getUserByID(id);
+            if (user != null) {
+                return user;
+            }
+        }
+        // test channel
+        if (arg.matches("<#([0-9]*)>")) {
+            String id = arg.substring(2, arg.length() - 1);
+            IChannel channel = client.getChannelByID(id);
+            if (channel != null) {
+                return channel;
+            }
+        }
+        return arg;
     }
 
 }

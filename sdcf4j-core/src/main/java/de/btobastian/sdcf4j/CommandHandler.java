@@ -20,6 +20,7 @@ package de.btobastian.sdcf4j;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,6 +32,8 @@ public abstract class CommandHandler {
     protected final HashMap<String, SimpleCommand> commands = new HashMap<>();
     protected final List<SimpleCommand> commandList = new ArrayList<>();
     private final HashMap<String, List<String>> permissions = new HashMap<>();
+
+    protected String defaultPrefix = "";
 
     /**
      * Registers an executor.
@@ -49,7 +52,7 @@ public abstract class CommandHandler {
             SimpleCommand command = new SimpleCommand(annotation, method, executor);
             for (String alias : annotation.aliases()) {
                 // add command to map. It's faster to access it from the map than iterating to the whole list
-                commands.put(alias.toLowerCase(), command);
+                commands.put(defaultPrefix + alias.toLowerCase().replace(" ", ""), command);
             }
             // we need a list, too, because a HashMap is not ordered.
             commandList.add(command);
@@ -94,6 +97,39 @@ public abstract class CommandHandler {
         }
         // user hasn't enough permissions
         return false;
+    }
+
+    /**
+     * Gets a list with all commands in the order they were registered.
+     * This is useful for automatic help commands.
+     *
+     * @return A list with all commands the the order they were registered.
+     */
+    public List<SimpleCommand> getCommands() {
+        return Collections.unmodifiableList(commandList);
+    }
+
+    /**
+     * Sets the default command prefix.
+     * Changing the default prefix after registering a command has no effect!
+     *
+     * @param defaultPrefix The default command prefix.
+     */
+    public void setDefaultPrefix(String defaultPrefix) {
+        if (defaultPrefix == null) {
+            this.defaultPrefix = "";
+        } else {
+            this.defaultPrefix = defaultPrefix.replace(" ", "");
+        }
+    }
+
+    /**
+     * Gets the default command prefix.
+     *
+     * @return The default command prefix.
+     */
+    public String getDefaultPrefix() {
+        return defaultPrefix;
     }
 
     /**
