@@ -1,5 +1,15 @@
 #sdcf4j <a href="#"><img src="https://img.shields.io/badge/Version-1.0.2-brightgreen.svg" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/de.btobastian.sdcf4j$sdcf4j-core/javadoc/"><img src="https://img.shields.io/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://img.shields.io/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
 
+Sdcf4j is a **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J). It helps you creating commands within seconds in a clean and simple way.
+
+A ping command is as easy as this:
+```java
+@Command(aliases = "ping", description = "Pong!")
+public String onPingCommand() {
+    return "Pong!";
+}
+```
+
 #Maven
 ```xml
 <repository>
