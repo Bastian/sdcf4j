@@ -49,6 +49,10 @@ The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/de.bto
 
 Thanks to ketrwu, too.
 
+#Tutorial
+
+Take a look at the [wiki](https://github.com/BtoBastian/sdcf4j/wiki) for a detailed description on how to use the library.
+
 #Examples
 
 Ping command:
