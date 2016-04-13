@@ -10,7 +10,7 @@ public String onPingCommand() {
 }
 ```
 
-#Maven
+##  Maven
 ```xml
 <repository>
   <id>sdcf4j-repo</id>
@@ -39,21 +39,21 @@ public String onPingCommand() {
 
 You can find me on one of these servers/channels. Feel free to contact me if you need help. :)
 
-#Download
-For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/lastSuccessfulBuild/)
+## Download
+For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/branch/master/lastSuccessfulBuild/)
 
 Thanks to ketrwu (https://github.com/KennethWussmann).
 
-#Javadocs
-The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/de.btobastian.sdcf4j$sdcf4j-core/javadoc/)
+## Javadocs
+The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/branch/master/de.btobastian.sdcf4j$sdcf4j-core/javadoc/)
 
 Thanks to ketrwu, too.
 
-#Tutorial
+## Tutorial
 
 Take a look at the [wiki](https://github.com/BtoBastian/sdcf4j/wiki) for a detailed description on how to use the library.
 
-#Examples
+## Examples
 
 Ping command:
 ```java
@@ -94,7 +94,7 @@ public String onCommand(Channel channel) {
 }
 ```
 
-#Register a CommandExecutor
+## Register a CommandExecutor
 
 ```java
 // Javacord
