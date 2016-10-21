@@ -22,16 +22,16 @@ import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
 import sx.blah.discord.Discord4J;
-import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.MissingPermissionsException;
-import sx.blah.discord.handle.IListener;
+import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.HTTP429Exception;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -114,7 +114,7 @@ public class Discord4JHandler extends CommandHandler {
             if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
                 try {
                     event.getMessage().getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
-                } catch (MissingPermissionsException | HTTP429Exception | DiscordException ignored) { }
+                } catch (MissingPermissionsException | RateLimitException | DiscordException ignored) { }
             }
             return;
         }
@@ -152,7 +152,7 @@ public class Discord4JHandler extends CommandHandler {
         if (reply != null) {
             try {
                 event.getMessage().getChannel().sendMessage(String.valueOf(reply));
-            } catch (MissingPermissionsException | HTTP429Exception | DiscordException ignored) { }
+            } catch (MissingPermissionsException | RateLimitException | DiscordException ignored) { }
         }
     }
 
