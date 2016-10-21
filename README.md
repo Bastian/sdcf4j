@@ -1,7 +1,16 @@
-# sdcf4j
-A **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J)
+#sdcf4j <a href="#"><img src="https://img.shields.io/badge/Version-1.0.3-brightgreen.svg" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/de.btobastian.sdcf4j$sdcf4j-core/javadoc/"><img src="https://img.shields.io/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://img.shields.io/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
 
-#Maven
+Sdcf4j is a **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J). It helps you creating commands within seconds in a clean and simple way.
+
+A ping command is as easy as this:
+```java
+@Command(aliases = "ping", description = "Pong!")
+public String onPingCommand() {
+    return "Pong!";
+}
+```
+
+##  Maven
 ```xml
 <repository>
   <id>sdcf4j-repo</id>
@@ -12,14 +21,14 @@ A **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting 
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <artifactId>sdcf4j-core</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 <!-- The module for your prefered lib-->
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-discord4j -->
   <artifactId>sdcf4j-javacord</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
@@ -30,17 +39,21 @@ A **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting 
 
 You can find me on one of these servers/channels. Feel free to contact me if you need help. :)
 
-#Download
-For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/lastSuccessfulBuild/)
+## Download
+For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/branch/master/lastSuccessfulBuild/)
 
 Thanks to ketrwu (https://github.com/KennethWussmann).
 
-#Javadocs
-The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/de.btobastian.sdcf4j$sdcf4j-core/javadoc/)
+## Javadocs
+The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/branch/master/de.btobastian.sdcf4j$sdcf4j-core/javadoc/)
 
 Thanks to ketrwu, too.
 
-#Examples
+## Tutorial
+
+Take a look at the [wiki](https://github.com/BtoBastian/sdcf4j/wiki) for a detailed description on how to use the library.
+
+## Examples
 
 Ping command:
 ```java
@@ -81,7 +94,7 @@ public String onCommand(Channel channel) {
 }
 ```
 
-#Register a CommandExecutor
+## Register a CommandExecutor
 
 ```java
 // Javacord
