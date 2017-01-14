@@ -27,7 +27,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.3</version>
                 <!-- We want to support Java 7 and newer -->
                 <configuration>
                     <source>1.7</source>
