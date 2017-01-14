@@ -23,9 +23,8 @@ import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.EventListener;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,20 +34,18 @@ import java.util.Arrays;
 /**
  * A command handler for the JDA library.
  */
-public class JDAHandler extends CommandHandler {
+public class JDA3Handler extends CommandHandler {
 
     /**
      * Creates a new instance of this class.
      *
      * @param jda A JDA instance.
      */
-    public JDAHandler(JDA jda) {
-        jda.addEventListener(new EventListener() {
+    public JDA3Handler(JDA jda) {
+        jda.addEventListener(new ListenerAdapter() {
             @Override
-            public void onEvent(Event event) {
-                if (event instanceof MessageReceivedEvent) {
-                    handleMessageCreate((MessageReceivedEvent) event);
-                }
+            public void onMessageReceived(MessageReceivedEvent event) {
+                handleMessageCreate(event);
             }
         });
     }
@@ -148,7 +145,7 @@ public class JDAHandler extends CommandHandler {
             SimpleLog.getLog(getClass().getName()).log(e);
         }
         if (reply != null) {
-            event.getChannel().sendMessage(String.valueOf(reply));
+            event.getChannel().sendMessage(String.valueOf(reply)).queue();
         }
     }
 

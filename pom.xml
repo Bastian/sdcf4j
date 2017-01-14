@@ -7,7 +7,7 @@
     <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.3</version>
+    <version>1.0.3-2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,7 +49,7 @@
     <distributionManagement>
         <!-- My repository which is the same I use for Javacord -->
         <repository>
-            <id>javacord-repo</id>
+            <id>javacord-testrepo</id>
             <name>Javacord Repository</name>
             <url>ftp://bastian-oppermann.de/</url>
         </repository>
