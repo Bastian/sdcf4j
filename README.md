@@ -21,14 +21,14 @@ public String onPingCommand() {
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <artifactId>sdcf4j-core</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 <!-- The module for your prefered lib-->
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
-  <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-discord4j -->
+  <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-jda3, sdcf4j-discord4j -->
   <artifactId>sdcf4j-javacord</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
@@ -101,6 +101,8 @@ public String onCommand(Channel channel) {
 CommandHandler cmdHandler = new JavacordHandler(api);
 // JDA
 CommandHandler cmdHandler = new JDAHandler(jda);
+// JDA3
+CommandHandler cmdHandler = new JDA3Handler(jda);
 // Discord4J
 CommandHandler cmdHandler = new Discord4JHandler(client);
 
