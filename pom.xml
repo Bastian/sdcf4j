@@ -7,7 +7,7 @@
     <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,6 +19,7 @@
         <module>sdcf4j-javacord</module>
         <module>sdcf4j-jda</module>
         <module>sdcf4j-discord4j</module>
+        <module>sdcf4j-jda3</module>
     </modules>
 
     <build>
@@ -26,7 +27,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.3</version>
                 <!-- We want to support Java 7 and newer -->
                 <configuration>
                     <source>1.7</source>

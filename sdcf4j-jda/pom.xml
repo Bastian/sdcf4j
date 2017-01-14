@@ -5,12 +5,26 @@
     <parent>
         <artifactId>sdcf4j</artifactId>
         <groupId>de.btobastian.sdcf4j</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sdcf4j-jda</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <repositories>
         <!-- JDA uses jcenter -->
