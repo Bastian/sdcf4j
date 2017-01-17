@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016 Bastian Oppermann
- * 
+ *
  * This file is part of SDCF4J.
  *
  * Javacord is free software; you can redistribute it and/or modify
@@ -91,5 +91,12 @@ public @interface Command {
      * @return Whether the bot has to be mentioned to react to a command.
      */
     boolean requiresMention() default false;
+
+    /**
+    * Gets whether the command can be executed by the logged in user
+    *
+    * @return whether the command can be executed by self
+    */
+    boolean allowSelf() default false;
 
 }
