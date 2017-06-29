@@ -146,6 +146,7 @@ public class JavacordHandler extends CommandHandler {
         Method method = command.getMethod();
         Object reply = null;
         try {
+            method.setAccessible(true);
             reply = method.invoke(command.getExecutor(), parameters);
         } catch (Exception e) {
             logger.warn("An error occurred while invoking method {}!", method.getName(), e);

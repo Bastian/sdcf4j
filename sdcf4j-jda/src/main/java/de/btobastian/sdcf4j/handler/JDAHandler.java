@@ -143,6 +143,7 @@ public class JDAHandler extends CommandHandler {
         Method method = command.getMethod();
         Object reply = null;
         try {
+            method.setAccessible(true);
             reply = method.invoke(command.getExecutor(), parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
             SimpleLog.getLog(getClass().getName()).log(e);
