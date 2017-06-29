@@ -145,6 +145,7 @@ public class Discord4JHandler extends CommandHandler {
         Method method = command.getMethod();
         Object reply = null;
         try {
+            method.setAccessible(true);
             reply = method.invoke(command.getExecutor(), parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
             Discord4J.LOGGER.warn("Cannot invoke method {}!", method.getName(), e);

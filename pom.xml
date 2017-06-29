@@ -7,7 +7,7 @@
     <groupId>de.btobastian.sdcf4j</groupId>
     <artifactId>sdcf4j</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
