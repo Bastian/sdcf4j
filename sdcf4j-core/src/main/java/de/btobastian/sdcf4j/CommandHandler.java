@@ -60,6 +60,16 @@ public abstract class CommandHandler {
     }
 
     /**
+     * Gets a map which contains all set permissions.
+     * The map's key is the user id, the value is a list with all permissions of this user.
+     *
+     * @return A map which contains all set permissions.
+     */
+    public HashMap<String, List<String>> getPermissions() {
+        return permissions;
+    }
+
+    /**
      * Adds a permission for the user with the given id.
      *
      * @param userId The id of the user.
