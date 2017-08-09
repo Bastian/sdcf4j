@@ -64,9 +64,9 @@ public @interface Command {
     String usage() default "";
 
     /**
-     * Gets whether the command is only for admins or not.
+     * Gets the permissions required for a user to run the command.
      *
-     * @return Whether the command is only for admins or not.
+     * @return The permissions required for a user to run the command.
      */
     String requiredPermissions() default "none";
 
