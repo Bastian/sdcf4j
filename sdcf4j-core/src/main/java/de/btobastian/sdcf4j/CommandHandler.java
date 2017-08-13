@@ -132,6 +132,34 @@ public abstract class CommandHandler {
             this.defaultPrefix = defaultPrefix.replace(" ", "");
         }
     }
+    
+    /**
+     * Sets the default command prefix, and re-registers all commands with the new prefix.
+     *
+     * @param defaultPrefix The default command prefix.
+     */
+    public void setNewDefaultPrefix(String defaultPrefix) {
+        // only works for old commands; stop the method if there's no current commands
+        if (commandList.isEmpty() || commands.isEmpty()) return;
+
+        // set the new default prefix
+        this.setDefaultPrefix(defaultPrefix);
+
+        // gather all current command executors
+        List<CommandExecutor> executors = new ArrayList<>(); // list to temporarily hold current command executers
+        for (SimpleCommand command : this.commandList) {
+            executors.add(command.getExecutor());
+        }
+
+        // clear current command variables
+        this.commandList.clear();
+        this.commands.clear();
+
+        // re-register each command in order
+        for (CommandExecutor executor : executors) {
+            this.registerCommand(executor);
+        }
+    }
 
     /**
      * Gets the default command prefix.
