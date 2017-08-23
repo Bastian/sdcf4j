@@ -236,7 +236,7 @@ public class JavacordHandler extends CommandHandler {
         } catch (NumberFormatException e) {}
         // test user
         if (arg.replace("!", "").matches("<@([0-9]*)>")) {
-            String id = arg.substring(2, arg.length() - 1);
+            String id = arg.replace("!", "").substring(2, arg.replace("!", "").length() - 1);
             User user = api.getCachedUserById(id);
             if (user != null) {
                 return user;

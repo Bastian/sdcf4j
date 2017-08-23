@@ -237,7 +237,7 @@ public class JDA3Handler extends CommandHandler {
         } catch (NumberFormatException e) {}
         // test user
         if (arg.replace("!", "").matches("<@([0-9]*)>")) {
-            String id = arg.substring(2, arg.length() - 1);
+            String id = arg.replace("!", "").substring(2, arg.replace("!", "").length() - 1);
             User user = jda.getUserById(id);
             if (user != null) {
                 return user;
