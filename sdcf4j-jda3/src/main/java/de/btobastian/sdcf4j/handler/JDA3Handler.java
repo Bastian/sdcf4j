@@ -236,7 +236,7 @@ public class JDA3Handler extends CommandHandler {
             return Integer.valueOf(arg);
         } catch (NumberFormatException e) {}
         // test user
-        if (arg.matches("<@([0-9]*)>")) {
+        if (arg.replace("!", "").matches("<@([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
             User user = jda.getUserById(id);
             if (user != null) {
@@ -244,7 +244,7 @@ public class JDA3Handler extends CommandHandler {
             }
         }
         // test channel
-        if (arg.matches("<#([0-9]*)>")) {
+        if (arg.replace("!", "").matches("<#([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
             Channel channel = jda.getTextChannelById(id);
             if (channel != null) {

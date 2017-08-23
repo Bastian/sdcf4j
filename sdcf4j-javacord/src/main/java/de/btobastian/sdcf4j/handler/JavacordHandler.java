@@ -235,7 +235,7 @@ public class JavacordHandler extends CommandHandler {
             return Integer.valueOf(arg);
         } catch (NumberFormatException e) {}
         // test user
-        if (arg.matches("<@([0-9]*)>")) {
+        if (arg.replace("!", "").matches("<@([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
             User user = api.getCachedUserById(id);
             if (user != null) {
@@ -243,7 +243,7 @@ public class JavacordHandler extends CommandHandler {
             }
         }
         // test channel
-        if (arg.matches("<#([0-9]*)>")) {
+        if (arg.replace("!", "").matches("<#([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
             Channel channel = api.getChannelById(id);
             if (channel != null) {
