@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sdcf4j</artifactId>
+        <groupId>de.btobastian.sdcf4j</groupId>
+        <version>1.0.5</version>
+    </parent>
+    <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sdcf4j-javacord3</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>sdcf4j-repo</id>
+            <url>http://repo.bastian-oppermann.de</url>
+        </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+    </repositories>
+
+    <dependencies>
+        <!-- The core module -->
+        <dependency>
+            <groupId>de.btobastian.sdcf4j</groupId>
+            <artifactId>sdcf4j-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Javacord -->
+        <dependency>
+            <groupId>com.github.btobastian</groupId>
+            <artifactId>Javacord</artifactId>
+            <version>80e2096</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
