@@ -17,6 +17,7 @@
     <modules>
         <module>sdcf4j-core</module>
         <module>sdcf4j-javacord</module>
+        <module>sdcf4j-javacord3</module>
         <module>sdcf4j-jda</module>
         <module>sdcf4j-discord4j</module>
         <module>sdcf4j-jda3</module>

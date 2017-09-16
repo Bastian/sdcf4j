@@ -231,15 +231,15 @@ public class Discord4JHandler extends CommandHandler {
             return Integer.valueOf(arg);
         } catch (NumberFormatException e) {}
         // test user
-        if (arg.matches("<@([0-9]*)>")) {
-            String id = arg.substring(2, arg.length() - 1);
+        if (arg.replace("!", "").matches("<@([0-9]*)>")) {
+            String id = arg.replace("!", "").substring(2, arg.length() - 1);
             IUser user = client.getUserByID(id);
             if (user != null) {
                 return user;
             }
         }
         // test channel
-        if (arg.matches("<#([0-9]*)>")) {
+        if (arg.replace("!", "").matches("<#([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
             IChannel channel = client.getChannelByID(id);
             if (channel != null) {

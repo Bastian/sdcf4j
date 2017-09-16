@@ -18,36 +18,39 @@
  */
 package de.btobastian.sdcf4j.handler;
 
+import de.btobastian.javacord.DiscordApi;
+import de.btobastian.javacord.entities.Server;
+import de.btobastian.javacord.entities.User;
+import de.btobastian.javacord.entities.channels.TextChannel;
+import de.btobastian.javacord.entities.message.Message;
+import de.btobastian.javacord.entities.message.Messageable;
+import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import org.slf4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
- * A command handler for the JDA library.
+ * A command handler for the Javacord library.
  */
-public class JDA3Handler extends CommandHandler {
+public class Javacord3Handler extends CommandHandler {
+
+    /**
+     * The logger of this class.
+     */
+    private static final Logger logger = LoggerUtil.getLogger(Javacord3Handler.class);
 
     /**
      * Creates a new instance of this class.
      *
-     * @param jda A JDA instance.
+     * @param api The api.
      */
-    public JDA3Handler(JDA jda) {
-        jda.addEventListener(new ListenerAdapter() {
-            @Override
-            public void onMessageReceived(MessageReceivedEvent event) {
-                handleMessageCreate(event);
-            }
-        });
+    public Javacord3Handler(DiscordApi api) {
+        api.addMessageCreateListener(event -> handleMessageCreate(event.getApi(), event.getMessage()));
     }
 
     /**
@@ -57,7 +60,7 @@ public class JDA3Handler extends CommandHandler {
      * @param permission The permission to add.
      */
     public void addPermission(User user, String permission) {
-        addPermission(user.getId(), permission);
+        addPermission(String.valueOf(user.getId()), permission);
     }
 
     /**
@@ -68,20 +71,20 @@ public class JDA3Handler extends CommandHandler {
      * @return If the user has the given permission.
      */
     public boolean hasPermission(User user, String permission) {
-        return hasPermission(user.getId(), permission);
+        return hasPermission(String.valueOf(user.getId()), permission);
     }
 
     /**
      * Handles a received message.
      *
-     * @param event The MessageReceivedEvent.
+     * @param api The api.
+     * @param message The received message.
      */
-    private void handleMessageCreate(final MessageReceivedEvent event) {
-        JDA jda = event.getJDA();
-        if (event.getAuthor() == jda.getSelfUser()) {
+    private void handleMessageCreate(DiscordApi api, final Message message) {
+        if (message.getAuthor().isPresent() && message.getAuthor().get().isYourself()) {
             return;
         }
-        String[] splitMessage = event.getMessage().getRawContent().split(" ");
+        String[] splitMessage = message.getContent().split(" ");
         String commandString = splitMessage[0];
         SimpleCommand command = commands.get(commandString.toLowerCase());
         if (command == null) {
@@ -98,34 +101,29 @@ public class JDA3Handler extends CommandHandler {
             }
         }
         Command commandAnnotation = command.getCommandAnnotation();
-        if (commandAnnotation.requiresMention() && !commandString.equals(jda.getSelfUser().getAsMention())) {
+        if (commandAnnotation.requiresMention() && !commandString.equals(api.getYourself().getMentionTag())) {
             return;
         }
-        if (event.isFromType(ChannelType.PRIVATE) && !commandAnnotation.privateMessages()) {
+        if (message.getPrivateChannel().isPresent() && !commandAnnotation.privateMessages()) {
             return;
         }
-        if (!event.isFromType(ChannelType.PRIVATE) && !commandAnnotation.channelMessages()) {
+        if (!message.getServerTextChannel().isPresent() && !commandAnnotation.channelMessages()) {
             return;
         }
-        if (!hasPermission(event.getAuthor(), commandAnnotation.requiredPermissions())) {
+        if (!hasPermission(message.getAuthor().get(), commandAnnotation.requiredPermissions())) {
             if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
-                event.getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
+                message.getServerTextChannel().ifPresent(serverTextChannel -> serverTextChannel.sendMessage(String.valueOf(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage())));
+                message.getGroupChannel().ifPresent(groupTextChannel -> groupTextChannel.sendMessage(String.valueOf(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage())));
+                message.getPrivateChannel().ifPresent(privateTextChannel -> privateTextChannel.sendMessage(String.valueOf(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage())));
             }
             return;
         }
-        final Object[] parameters = getParameters(splitMessage, command, event);
+        final Object[] parameters = getParameters(splitMessage, command, message, api);
         if (commandAnnotation.async()) {
             final SimpleCommand commandFinal = command;
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    invokeMethod(commandFinal, event, parameters);
-                }
-            });
-            t.setDaemon(true);
-            t.start();
+            api.getThreadPool().getExecutorService().submit(() -> invokeMethod(commandFinal, message, parameters));
         } else {
-            invokeMethod(command, event, parameters);
+            invokeMethod(command, message, parameters);
         }
     }
 
@@ -133,20 +131,23 @@ public class JDA3Handler extends CommandHandler {
      * Invokes the method of the command.
      *
      * @param command The command.
-     * @param event The event.
+     * @param message The original message.
      * @param parameters The parameters for the method.
      */
-    private void invokeMethod(SimpleCommand command, MessageReceivedEvent event, Object[] parameters) {
+    private void invokeMethod(SimpleCommand command, Message message, Object[] parameters) {
         Method method = command.getMethod();
         Object reply = null;
         try {
             method.setAccessible(true);
             reply = method.invoke(command.getExecutor(), parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            SimpleLog.getLog(getClass().getName()).log(e);
+        } catch (Exception e) {
+            logger.warn("An error occurred while invoking method {}!", method.getName(), e);
         }
         if (reply != null) {
-            event.getChannel().sendMessage(String.valueOf(reply)).queue();
+            Object finalReply = reply;
+            message.getServerTextChannel().ifPresent(serverTextChannel -> serverTextChannel.sendMessage(String.valueOf(finalReply)));
+            message.getGroupChannel().ifPresent(groupTextChannel -> groupTextChannel.sendMessage(String.valueOf(finalReply)));
+            message.getPrivateChannel().ifPresent(privateTextChannel -> privateTextChannel.sendMessage(String.valueOf(finalReply)));
         }
     }
 
@@ -155,15 +156,17 @@ public class JDA3Handler extends CommandHandler {
      *
      * @param splitMessage The spit message (index 0: command, index > 0: arguments)
      * @param command The command.
-     * @param event The event.
+     * @param message The original message.
+     * @param api The api.
      * @return The parameters which are used to invoke the executor's method.
      */
-    private Object[] getParameters(String[] splitMessage, SimpleCommand command, MessageReceivedEvent event) {
+    private Object[] getParameters(String[] splitMessage, SimpleCommand command, final Message message, DiscordApi api) {
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
         Class<?>[] parameterTypes = command.getMethod().getParameterTypes();
         final Object[] parameters = new Object[parameterTypes.length];
         int stringCounter = 0;
         for (int i = 0; i < parameterTypes.length; i++) { // check all parameters
+            final int index = i;
             Class<?> type = parameterTypes[i];
             if (type == String.class) {
                 if (stringCounter++ == 0) {
@@ -176,30 +179,20 @@ public class JDA3Handler extends CommandHandler {
                 }
             } else if (type == String[].class) {
                 parameters[i] = args;
-            } else if (type == MessageReceivedEvent.class) {
-                parameters[i] = event;
-            } else if (type == JDA.class) {
-                parameters[i] = event.getJDA();
-            } else if (type == MessageChannel.class) {
-                parameters[i] = event.getChannel();
             } else if (type == Message.class) {
-                parameters[i] = event.getMessage();
+                parameters[i] = message;
+            } else if (type == DiscordApi.class) {
+                parameters[i] = api;
+            } else if (type == TextChannel.class || type == Messageable.class) {
+                message.getServerTextChannel().ifPresent(serverTextChannel -> parameters[index] = serverTextChannel);
+                message.getPrivateChannel().ifPresent(privateTextChannel -> parameters[index] = privateTextChannel);
+                message.getGroupChannel().ifPresent(groupTextChannel -> parameters[index] = groupTextChannel);
             } else if (type == User.class) {
-                parameters[i] = event.getAuthor();
-            } else if (type == TextChannel.class) {
-                parameters[i] = event.getTextChannel();
-            } else if (type == PrivateChannel.class) {
-                parameters[i] = event.getPrivateChannel();
-            } else if (type == MessageChannel.class) {
-                parameters[i] = event.getChannel();
-            } else if (type == Channel.class) {
-                parameters[i] = event.getTextChannel();
-            } else if (type == Guild.class) {
-                parameters[i] = event.getGuild();
-            } else if (type == Integer.class || type == int.class) {
-                parameters[i] = event.getResponseNumber();
+                message.getAuthor().ifPresent(user -> parameters[index] = user);
+            }  else if (type == Server.class) {
+                message.getServerTextChannel().ifPresent(serverTextChannel -> parameters[index] = serverTextChannel.getServer());
             } else if (type == Object[].class) {
-                parameters[i] = getObjectsFromString(event.getJDA(), args);
+                parameters[i] = getObjectsFromString(api, args);
             } else {
                 // unknown type
                 parameters[i] = null;
@@ -211,14 +204,14 @@ public class JDA3Handler extends CommandHandler {
     /**
      * Tries to get objects (like channel, user, integer) from the given strings.
      *
-     * @param jda The jda object.
+     * @param api The api.
      * @param args The string array.
      * @return An object array.
      */
-    private Object[] getObjectsFromString(JDA jda, String[] args) {
+    private Object[] getObjectsFromString(DiscordApi api, String[] args) {
         Object[] objects = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
-            objects[i] = getObjectFromString(jda, args[i]);
+            objects[i] = getObjectFromString(api, args[i]);
         }
         return objects;
     }
@@ -226,29 +219,32 @@ public class JDA3Handler extends CommandHandler {
     /**
      * Tries to get an object (like channel, user, integer) from the given string.
      *
-     * @param jda The jda object.
+     * @param api The api.
      * @param arg The string.
      * @return The object.
      */
-    private Object getObjectFromString(JDA jda, String arg) {
-        try {
-            // test int
+    private Object getObjectFromString(DiscordApi api, String arg) {
+
+        // test integer
+        if(arg.matches("^-?\\d+$")) {
             return Integer.valueOf(arg);
-        } catch (NumberFormatException e) {}
-        // test user
-        if (arg.replace("!", "").matches("<@([0-9]*)>")) {
-            String id = arg.replace("!", "").substring(2, arg.replace("!", "").length() - 1);
-            User user = jda.getUserById(id);
-            if (user != null) {
-                return user;
-            }
         }
+
+        // test user
+        final String userTag = arg.replace("!", "");
+        if (userTag.matches("<@([0-9]*)>")) {
+            String id = userTag.substring(2, userTag.length() - 1);
+            Optional<User> user = api.getUserById(id);
+            if(user.isPresent())
+                return user.get();
+        }
+
         // test channel
-        if (arg.replace("!", "").matches("<#([0-9]*)>")) {
+        if (arg.matches("<#([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
-            Channel channel = jda.getTextChannelById(id);
-            if (channel != null) {
-                return channel;
+            Optional<TextChannel> channel = api.getTextChannelById(id);
+            if (channel.isPresent()) {
+                return channel.get();
             }
         }
         return arg;
