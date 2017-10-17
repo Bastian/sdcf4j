@@ -19,8 +19,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -28,8 +28,8 @@
 
     <repositories>
         <repository>
-            <id>javacord-repo</id>
-            <url>http://repo.bastian-oppermann.de</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -42,9 +42,9 @@
         </dependency>
         <!-- Javacord -->
         <dependency>
-            <groupId>de.btobastian.javacord</groupId>
-            <artifactId>javacord</artifactId>
-            <version>2.0.14</version>
+            <groupId>de.btobastian</groupId>
+            <artifactId>Javacord</artifactId>
+            <version>6dd48cb</version>
         </dependency>
     </dependencies>
 
