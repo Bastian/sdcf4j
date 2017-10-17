@@ -116,11 +116,8 @@ public class JDA3Handler extends CommandHandler {
         final Object[] parameters = getParameters(splitMessage, command, event);
         if (commandAnnotation.async()) {
             final SimpleCommand commandFinal = command;
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    invokeMethod(commandFinal, event, parameters);
-                }
+            Thread t = new Thread(() -> {
+                invokeMethod(commandFinal, event, parameters);
             });
             t.setDaemon(true);
             t.start();
@@ -143,7 +140,7 @@ public class JDA3Handler extends CommandHandler {
             method.setAccessible(true);
             reply = method.invoke(command.getExecutor(), parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            SimpleLog.getLog(getClass().getName()).log(e);
+            SimpleLog.getLog(getClass()).warn(e);
         }
         if (reply != null) {
             event.getChannel().sendMessage(String.valueOf(reply)).queue();
@@ -232,9 +229,9 @@ public class JDA3Handler extends CommandHandler {
      */
     private Object getObjectFromString(JDA jda, String arg) {
         try {
-            // test int
-            return Integer.valueOf(arg);
-        } catch (NumberFormatException e) {}
+            // test long
+            return Long.valueOf(arg);
+        } catch (NumberFormatException ignored) {}
         // test user
         if (arg.matches("<@([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
