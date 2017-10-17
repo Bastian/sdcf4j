@@ -18,14 +18,12 @@
  */
 package de.btobastian.sdcf4j.handler;
 
-import de.btobastian.javacord.DiscordAPI;
-import de.btobastian.javacord.entities.Channel;
+import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
+import de.btobastian.javacord.entities.channels.*;
 import de.btobastian.javacord.entities.message.Message;
-import de.btobastian.javacord.entities.message.MessageReceiver;
-import de.btobastian.javacord.listener.message.MessageCreateListener;
-import de.btobastian.javacord.utils.LoggerUtil;
+import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
@@ -49,13 +47,8 @@ public class JavacordHandler extends CommandHandler {
      *
      * @param api The api.
      */
-    public JavacordHandler(DiscordAPI api) {
-        api.registerListener(new MessageCreateListener() {
-            @Override
-            public void onMessageCreate(DiscordAPI api, Message message) {
-                handleMessageCreate(api, message);
-            }
-        });
+    public JavacordHandler(DiscordApi api) {
+        api.addMessageCreateListener(event -> handleMessageCreate(api, event.getMessage()));
     }
 
     /**
@@ -65,7 +58,7 @@ public class JavacordHandler extends CommandHandler {
      * @param permission The permission to add.
      */
     public void addPermission(User user, String permission) {
-        addPermission(user.getId(), permission);
+        addPermission(String.valueOf(user.getId()), permission);
     }
 
     /**
@@ -76,7 +69,7 @@ public class JavacordHandler extends CommandHandler {
      * @return If the user has the given permission.
      */
     public boolean hasPermission(User user, String permission) {
-        return hasPermission(user.getId(), permission);
+        return hasPermission(String.valueOf(user.getId()), permission);
     }
 
     /**
@@ -85,8 +78,8 @@ public class JavacordHandler extends CommandHandler {
      * @param api The api.
      * @param message The received message.
      */
-    private void handleMessageCreate(DiscordAPI api, final Message message) {
-        if (message.getAuthor().isYourself()) {
+    private void handleMessageCreate(DiscordApi api, final Message message) {
+        if (message.getAuthor().map(User::isYourself).orElse(false)) {
             return;
         }
         String[] splitMessage = message.getContent().split(" ");
@@ -109,15 +102,15 @@ public class JavacordHandler extends CommandHandler {
         if (commandAnnotation.requiresMention() && !commandString.equals(api.getYourself().getMentionTag())) {
             return;
         }
-        if (message.isPrivateMessage() && !commandAnnotation.privateMessages()) {
+        if (message.getPrivateChannel().isPresent() && !commandAnnotation.privateMessages()) {
             return;
         }
-        if (!message.isPrivateMessage() && !commandAnnotation.channelMessages()) {
+        if (!message.getPrivateChannel().isPresent() && !commandAnnotation.channelMessages()) {
             return;
         }
-        if (!hasPermission(message.getAuthor(), commandAnnotation.requiredPermissions())) {
+        if (!hasPermission(message.getAuthor().map(User::getId).map(String::valueOf).orElse("-1"), commandAnnotation.requiredPermissions())) {
             if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
-                message.reply(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
+                message.getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
             }
             return;
         }
@@ -152,7 +145,7 @@ public class JavacordHandler extends CommandHandler {
             logger.warn("An error occurred while invoking method {}!", method.getName(), e);
         }
         if (reply != null) {
-            message.reply(String.valueOf(reply));
+            message.getChannel().sendMessage(String.valueOf(reply));
         }
     }
 
@@ -165,7 +158,7 @@ public class JavacordHandler extends CommandHandler {
      * @param api The api.
      * @return The parameters which are used to invoke the executor's method.
      */
-    private Object[] getParameters(String[] splitMessage, SimpleCommand command, Message message, DiscordAPI api) {
+    private Object[] getParameters(String[] splitMessage, SimpleCommand command, Message message, DiscordApi api) {
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
         Class<?>[] parameterTypes = command.getMethod().getParameterTypes();
         final Object[] parameters = new Object[parameterTypes.length];
@@ -185,18 +178,24 @@ public class JavacordHandler extends CommandHandler {
                 parameters[i] = args;
             } else if (type == Message.class) {
                 parameters[i] = message;
-            } else if (type == DiscordAPI.class) {
+            } else if (type == DiscordApi.class) {
                 parameters[i] = api;
             } else if (type == Channel.class) {
-                parameters[i] = message.getChannelReceiver();
+                parameters[i] = message.getChannel();
+            } else if (type == GroupChannel.class) {
+                parameters[i] = message.getChannel().asGroupChannel().orElse(null);
+            } else if (type == PrivateChannel.class) {
+                parameters[i] = message.getChannel().asPrivateChannel().orElse(null);
+            } else if (type == ServerChannel.class) {
+                parameters[i] = message.getChannel().asServerChannel().orElse(null);
+            } else if (type == ServerTextChannel.class) {
+                parameters[i] = message.getChannel().asServerTextChannel().orElse(null);
+            } else if (type == TextChannel.class) {
+                parameters[i] = message.getChannel().asTextChannel().orElse(null);
             } else if (type == User.class) {
-                parameters[i] = message.getAuthor();
-            } else if (type == MessageReceiver.class) {
-                parameters[i] = message.getReceiver();
-            } else if (type == Server.class) {
-                if (message.getChannelReceiver() != null) {
-                    parameters[i] = message.getChannelReceiver().getServer();
-                }
+                parameters[i] = message.getAuthor().orElse(null);
+            }else if (type == Server.class) {
+                parameters[i] = message.getServerTextChannel().map(ServerTextChannel::getServer).orElse(null);
             } else if (type == Object[].class) {
                 parameters[i] = getObjectsFromString(api, args);
             } else {
@@ -214,7 +213,7 @@ public class JavacordHandler extends CommandHandler {
      * @param args The string array.
      * @return An object array.
      */
-    private Object[] getObjectsFromString(DiscordAPI api, String[] args) {
+    private Object[] getObjectsFromString(DiscordApi api, String[] args) {
         Object[] objects = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             objects[i] = getObjectFromString(api, args[i]);
@@ -229,15 +228,15 @@ public class JavacordHandler extends CommandHandler {
      * @param arg The string.
      * @return The object.
      */
-    private Object getObjectFromString(DiscordAPI api, String arg) {
+    private Object getObjectFromString(DiscordApi api, String arg) {
         try {
-            // test int
-            return Integer.valueOf(arg);
-        } catch (NumberFormatException e) {}
+            // test long
+            return Long.valueOf(arg);
+        } catch (NumberFormatException ignored) {}
         // test user
         if (arg.matches("<@([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
-            User user = api.getCachedUserById(id);
+            User user = api.getUserById(id).orElse(null);
             if (user != null) {
                 return user;
             }
@@ -245,7 +244,7 @@ public class JavacordHandler extends CommandHandler {
         // test channel
         if (arg.matches("<#([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
-            Channel channel = api.getChannelById(id);
+            Channel channel = api.getChannelById(id).orElse(null);
             if (channel != null) {
                 return channel;
             }

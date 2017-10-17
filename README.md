@@ -1,4 +1,4 @@
-# sdcf4j <a href="#"><img src="https://img.shields.io/badge/Version-1.0.5-brightgreen.svg" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/"><img src="https://img.shields.io/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://img.shields.io/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
+# sdcf4j <a href="#"><img src="https://img.shields.io/badge/Version-1.0.6-brightgreen.svg" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/"><img src="https://img.shields.io/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://img.shields.io/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
 
 Sdcf4j is a **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J). It helps you creating commands within seconds in a clean and simple way.
 
@@ -21,14 +21,14 @@ public String onPingCommand() {
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <artifactId>sdcf4j-core</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
 </dependency>
 <!-- The module for your prefered lib-->
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
-  <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-jda3, sdcf4j-discord4j -->
+  <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda3, sdcf4j-discord4j -->
   <artifactId>sdcf4j-javacord</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
 </dependency>
 ```
 
@@ -99,8 +99,6 @@ public String onCommand(Channel channel) {
 ```java
 // Javacord
 CommandHandler cmdHandler = new JavacordHandler(api);
-// JDA
-CommandHandler cmdHandler = new JDAHandler(jda);
 // JDA3
 CommandHandler cmdHandler = new JDA3Handler(jda);
 // Discord4J

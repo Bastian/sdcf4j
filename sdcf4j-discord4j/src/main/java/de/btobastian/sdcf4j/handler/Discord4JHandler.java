@@ -24,7 +24,7 @@ import de.btobastian.sdcf4j.Sdcf4jMessage;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -63,7 +63,7 @@ public class Discord4JHandler extends CommandHandler {
      * @param permission The permission to add.
      */
     public void addPermission(IUser user, String permission) {
-        addPermission(user.getID(), permission);
+        addPermission(user.getStringID(), permission);
     }
 
     /**
@@ -74,7 +74,7 @@ public class Discord4JHandler extends CommandHandler {
      * @return If the user has the given permission.
      */
     public boolean hasPermission(IUser user, String permission) {
-        return hasPermission(user.getID(), permission);
+        return hasPermission(user.getStringID(), permission);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Discord4JHandler extends CommandHandler {
         }
         Command commandAnnotation = command.getCommandAnnotation();
         if (commandAnnotation.requiresMention() &&
-                !commandString.equals("<@" + event.getClient().getOurUser().getID() + ">")) {
+                !commandString.equals("<@" + event.getClient().getOurUser().getStringID() + ">")) {
             return;
         }
         if (event.getMessage().getChannel().isPrivate() && !commandAnnotation.privateMessages()) {
@@ -227,13 +227,13 @@ public class Discord4JHandler extends CommandHandler {
      */
     private Object getObjectFromString(IDiscordClient client, String arg) {
         try {
-            // test int
-            return Integer.valueOf(arg);
-        } catch (NumberFormatException e) {}
+            // test long
+            return Long.valueOf(arg);
+        } catch (NumberFormatException ignored) {}
         // test user
         if (arg.matches("<@([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
-            IUser user = client.getUserByID(id);
+            IUser user = client.getUserByID(Long.valueOf(id));
             if (user != null) {
                 return user;
             }
@@ -241,7 +241,7 @@ public class Discord4JHandler extends CommandHandler {
         // test channel
         if (arg.matches("<#([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
-            IChannel channel = client.getChannelByID(id);
+            IChannel channel = client.getChannelByID(Long.valueOf(id));
             if (channel != null) {
                 return channel;
             }
