@@ -48,7 +48,7 @@
     <distributionManagement>
         <!-- My repository which is the same I use for Javacord -->
         <repository>
-            <id>javacord-testrepo</id>
+            <id>javacord-repo</id>
             <name>Javacord Repository</name>
             <url>ftp://bastian-oppermann.de/</url>
         </repository>
