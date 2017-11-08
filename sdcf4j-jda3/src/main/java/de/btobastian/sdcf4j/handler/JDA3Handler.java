@@ -183,6 +183,8 @@ public class JDA3Handler extends CommandHandler {
                 parameters[i] = event.getMessage();
             } else if (type == User.class) {
                 parameters[i] = event.getAuthor();
+            } else if (type == Member.class) {
+                parameters[i] = event.getMember();
             } else if (type == TextChannel.class) {
                 parameters[i] = event.getTextChannel();
             } else if (type == PrivateChannel.class) {

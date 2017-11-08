@@ -23,6 +23,7 @@ import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.channels.*;
 import de.btobastian.javacord.entities.message.Message;
+import de.btobastian.javacord.entities.message.MessageAuthor;
 import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
@@ -79,7 +80,7 @@ public class JavacordHandler extends CommandHandler {
      * @param message The received message.
      */
     private void handleMessageCreate(DiscordApi api, final Message message) {
-        if (message.getAuthor().map(User::isYourself).orElse(false)) {
+        if (message.getUserAuthor().map(User::isYourself).orElse(false)) {
             return;
         }
         String[] splitMessage = message.getContent().split(" ");
@@ -108,7 +109,7 @@ public class JavacordHandler extends CommandHandler {
         if (!message.getPrivateChannel().isPresent() && !commandAnnotation.channelMessages()) {
             return;
         }
-        if (!hasPermission(message.getAuthor().map(User::getId).map(String::valueOf).orElse("-1"), commandAnnotation.requiredPermissions())) {
+        if (!hasPermission(message.getUserAuthor().map(User::getId).map(String::valueOf).orElse("-1"), commandAnnotation.requiredPermissions())) {
             if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
                 message.getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
             }
@@ -193,8 +194,10 @@ public class JavacordHandler extends CommandHandler {
             } else if (type == TextChannel.class) {
                 parameters[i] = message.getChannel().asTextChannel().orElse(null);
             } else if (type == User.class) {
-                parameters[i] = message.getAuthor().orElse(null);
-            }else if (type == Server.class) {
+                parameters[i] = message.getUserAuthor().orElse(null);
+            } else if (type == MessageAuthor.class) {
+                parameters[i] = message.getAuthor();
+            }  else if (type == Server.class) {
                 parameters[i] = message.getServerTextChannel().map(ServerTextChannel::getServer).orElse(null);
             } else if (type == Object[].class) {
                 parameters[i] = getObjectsFromString(api, args);
