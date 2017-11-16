@@ -25,7 +25,8 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,6 +36,11 @@ import java.util.Arrays;
  * A command handler for the JDA library.
  */
 public class JDA3Handler extends CommandHandler {
+    
+    /**
+     * The logger of this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(JDA3Handler.class);
 
     /**
      * Creates a new instance of this class.
@@ -116,9 +122,7 @@ public class JDA3Handler extends CommandHandler {
         final Object[] parameters = getParameters(splitMessage, command, event);
         if (commandAnnotation.async()) {
             final SimpleCommand commandFinal = command;
-            Thread t = new Thread(() -> {
-                invokeMethod(commandFinal, event, parameters);
-            });
+            Thread t = new Thread(() -> invokeMethod(commandFinal, event, parameters));
             t.setDaemon(true);
             t.start();
         } else {
@@ -140,7 +144,7 @@ public class JDA3Handler extends CommandHandler {
             method.setAccessible(true);
             reply = method.invoke(command.getExecutor(), parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            SimpleLog.getLog(getClass()).warn(e);
+            logger.warn("An error occurred while invoking method {}!", method.getName(), e);
         }
         if (reply != null) {
             event.getChannel().sendMessage(String.valueOf(reply)).queue();
