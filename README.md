@@ -23,7 +23,7 @@ public String onPingCommand() {
   <artifactId>sdcf4j-core</artifactId>
   <version>%version%</version>
 </dependency>
-<!-- The module for your prefered lib-->
+<!-- The module for your preferred lib -->
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda3, sdcf4j-discord4j -->
@@ -39,7 +39,7 @@ Latest version: <a href="#"><img src="https://img.shields.io/github/release/BtoB
 * [Javacord server](https://discord.gg/0qJ2jjyneLEgG7y3)
 * [DiscordAPI #java_javacord channel](https://discord.gg/0SBTUU1wZTVXVKEo)
 
-You can find me on one of these servers/channels. Feel free to contact me if you need help. :)
+You can find me in one of these servers/channels. Feel free to contact me if you need help. :)
 
 ## Download
 For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/branch/master/lastSuccessfulBuild/)
