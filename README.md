@@ -1,4 +1,4 @@
-# sdcf4j <a href="#"><img src="https://img.shields.io/badge/Version-1.0.7-brightgreen.svg" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/"><img src="https://img.shields.io/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://img.shields.io/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
+# sdcf4j <a href="#"><img src="https://img.shields.io/github/release/BtoBastian/sdcf4j.svg?colorB=brightgreen&label=Version" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/"><img src="https://img.shields.io/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://img.shields.io/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
 
 Sdcf4j is a **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J). It helps you creating commands within seconds in a clean and simple way.
 
@@ -13,31 +13,33 @@ public String onPingCommand() {
 ##  Maven
 ```xml
 <repository>
-  <id>sdcf4j-repo</id>
-  <url>http://repo.bastian-oppermann.de</url>
+  <id>jitpack.io</id>
+  <url>https://jitpack.io</url>
 </repository>
 ...
 <!-- The core module -->
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <artifactId>sdcf4j-core</artifactId>
-  <version>1.0.7</version>
+  <version>%version%</version>
 </dependency>
-<!-- The module for your prefered lib-->
+<!-- The module for your preferred lib -->
 <dependency>
   <groupId>de.btobastian.sdcf4j</groupId>
   <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda3, sdcf4j-discord4j -->
   <artifactId>sdcf4j-javacord</artifactId>
-  <version>1.0.7</version>
+  <version>%version%</version>
 </dependency>
 ```
+Make sure to replace `%version%` with the latest version number, e.g. `v1.0.0` (don't use this one!).
 
+Latest version: <a href="#"><img src="https://img.shields.io/github/release/BtoBastian/sdcf4j.svg?colorB=brightgreen&label=Version" alt="Latest version"></a>
 ## Support
  
 * [Javacord server](https://discord.gg/0qJ2jjyneLEgG7y3)
 * [DiscordAPI #java_javacord channel](https://discord.gg/0SBTUU1wZTVXVKEo)
 
-You can find me on one of these servers/channels. Feel free to contact me if you need help. :)
+You can find me in one of these servers/channels. Feel free to contact me if you need help. :)
 
 ## Download
 For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/branch/master/lastSuccessfulBuild/)

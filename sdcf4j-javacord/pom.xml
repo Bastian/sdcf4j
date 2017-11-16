@@ -5,7 +5,7 @@
     <parent>
         <artifactId>sdcf4j</artifactId>
         <groupId>de.btobastian.sdcf4j</groupId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
     </parent>
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>de.btobastian</groupId>
             <artifactId>Javacord</artifactId>
-            <version>eaa7951</version>
+            <version>6f357bc</version>
         </dependency>
     </dependencies>
 
