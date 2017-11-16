@@ -21,6 +21,7 @@ package de.btobastian.sdcf4j.handler;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
+import net.dv8tion.jda.client.entities.Group;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -36,7 +37,7 @@ import java.util.Arrays;
  * A command handler for the JDA library.
  */
 public class JDA3Handler extends CommandHandler {
-    
+
     /**
      * The logger of this class.
      */
@@ -197,6 +198,8 @@ public class JDA3Handler extends CommandHandler {
                 parameters[i] = event.getChannel();
             } else if (type == Channel.class) {
                 parameters[i] = event.getTextChannel();
+            } else if (type == Group.class) {
+                parameters[i] = event.getGroup();
             } else if (type == Guild.class) {
                 parameters[i] = event.getGuild();
             } else if (type == Integer.class || type == int.class) {
