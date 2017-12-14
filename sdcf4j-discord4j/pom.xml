@@ -46,6 +46,7 @@
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4j</artifactId>
             <version>2.9.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
