@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * A command handler for the JDA library.
@@ -116,7 +117,7 @@ public class JDA3Handler extends CommandHandler {
         }
         if (!hasPermission(event.getAuthor(), commandAnnotation.requiredPermissions())) {
             if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
-                event.getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
+                event.getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage()).queue();
             }
             return;
         }
