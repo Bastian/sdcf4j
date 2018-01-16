@@ -118,12 +118,7 @@ public class JavacordHandler extends CommandHandler {
         final Object[] parameters = getParameters(splitMessage, command, message, api);
         if (commandAnnotation.async()) {
             final SimpleCommand commandFinal = command;
-            api.getThreadPool().getExecutorService().submit(new Runnable() {
-                @Override
-                public void run() {
-                    invokeMethod(commandFinal, message, parameters);
-                }
-            });
+            api.getThreadPool().getExecutorService().submit(() -> invokeMethod(commandFinal, message, parameters));
         } else {
             invokeMethod(command, message, parameters);
         }
