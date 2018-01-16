@@ -83,7 +83,7 @@ public class JavacordHandler extends CommandHandler {
         if (message.getUserAuthor().map(User::isYourself).orElse(false)) {
             return;
         }
-        String[] splitMessage = message.getContent().split(" ");
+        String[] splitMessage = message.getContent().split("[\\s&&[^\\n]]++");
         String commandString = splitMessage[0];
         SimpleCommand command = commands.get(commandString.toLowerCase());
         if (command == null) {

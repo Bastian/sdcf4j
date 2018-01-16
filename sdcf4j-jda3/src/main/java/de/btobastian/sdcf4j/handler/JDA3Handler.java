@@ -89,7 +89,7 @@ public class JDA3Handler extends CommandHandler {
         if (event.getAuthor() == jda.getSelfUser()) {
             return;
         }
-        String[] splitMessage = event.getMessage().getContentRaw().split(" ");
+        String[] splitMessage = event.getMessage().getContentRaw().split("[\\s&&[^\\n]]++");
         String commandString = splitMessage[0];
         SimpleCommand command = commands.get(commandString.toLowerCase());
         if (command == null) {

@@ -83,7 +83,7 @@ public class Discord4JHandler extends CommandHandler {
      * @param event The MessageReceivedEvent.
      */
     private void handleMessageCreate(final MessageReceivedEvent event) {
-        String[] splitMessage = event.getMessage().getContent().split(" ");
+        String[] splitMessage = event.getMessage().getContent().split("[\\s&&[^\\n]]++");
         String commandString = splitMessage[0];
         SimpleCommand command = commands.get(commandString.toLowerCase());
         if (command == null) {
