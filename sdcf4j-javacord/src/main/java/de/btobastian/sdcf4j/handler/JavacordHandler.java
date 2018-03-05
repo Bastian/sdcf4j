@@ -18,18 +18,18 @@
  */
 package de.btobastian.sdcf4j.handler;
 
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.entity.channel.Channel;
-import de.btobastian.javacord.entity.channel.GroupChannel;
-import de.btobastian.javacord.entity.channel.PrivateChannel;
-import de.btobastian.javacord.entity.channel.ServerChannel;
-import de.btobastian.javacord.entity.channel.ServerTextChannel;
-import de.btobastian.javacord.entity.channel.TextChannel;
-import de.btobastian.javacord.entity.message.Message;
-import de.btobastian.javacord.entity.message.MessageAuthor;
-import de.btobastian.javacord.entity.server.Server;
-import de.btobastian.javacord.entity.user.User;
-import de.btobastian.javacord.util.logging.LoggerUtil;
+import org.javacord.DiscordApi;
+import org.javacord.entity.channel.Channel;
+import org.javacord.entity.channel.GroupChannel;
+import org.javacord.entity.channel.PrivateChannel;
+import org.javacord.entity.channel.ServerChannel;
+import org.javacord.entity.channel.ServerTextChannel;
+import org.javacord.entity.channel.TextChannel;
+import org.javacord.entity.message.Message;
+import org.javacord.entity.message.MessageAuthor;
+import org.javacord.entity.server.Server;
+import org.javacord.entity.user.User;
+import org.javacord.util.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
