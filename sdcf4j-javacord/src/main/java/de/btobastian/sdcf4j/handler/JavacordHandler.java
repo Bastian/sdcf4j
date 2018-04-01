@@ -18,21 +18,21 @@
  */
 package de.btobastian.sdcf4j.handler;
 
-import org.javacord.DiscordApi;
-import org.javacord.entity.channel.Channel;
-import org.javacord.entity.channel.GroupChannel;
-import org.javacord.entity.channel.PrivateChannel;
-import org.javacord.entity.channel.ServerChannel;
-import org.javacord.entity.channel.ServerTextChannel;
-import org.javacord.entity.channel.TextChannel;
-import org.javacord.entity.message.Message;
-import org.javacord.entity.message.MessageAuthor;
-import org.javacord.entity.server.Server;
-import org.javacord.entity.user.User;
-import org.javacord.util.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.Channel;
+import org.javacord.api.entity.channel.GroupChannel;
+import org.javacord.api.entity.channel.PrivateChannel;
+import org.javacord.api.entity.channel.ServerChannel;
+import org.javacord.api.entity.channel.ServerTextChannel;
+import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.MessageAuthor;
+import org.javacord.api.entity.server.Server;
+import org.javacord.api.entity.user.User;
+import org.javacord.core.util.logging.LoggerUtil;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Method;

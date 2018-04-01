@@ -76,9 +76,9 @@
         </dependency>
         <!-- Javacord -->
         <dependency>
-            <groupId>de.btobastian</groupId>
-            <artifactId>Javacord</artifactId>
-            <version>e078151af2</version>
+            <groupId>de.btobastian.Javacord</groupId>
+            <artifactId>javacord</artifactId>
+            <version>e8ec700</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
