@@ -101,7 +101,8 @@ public class Discord4JHandler extends CommandHandler {
         }
         Command commandAnnotation = command.getCommandAnnotation();
         if (commandAnnotation.requiresMention() &&
-                !commandString.equals("<@" + event.getClient().getOurUser().getStringID() + ">")) {
+                (!commandString.equals("<@" + event.getClient().getOurUser().getStringID() + ">") &&
+                        !commandString.equals("<@!" + event.getClient().getOurUser().getStringID() + ">"))) {
             return;
         }
         if (event.getMessage().getChannel().isPrivate() && !commandAnnotation.privateMessages()) {
