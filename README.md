@@ -47,7 +47,7 @@ For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/b
 Thanks to ketrwu (https://github.com/KennethWussmann).
 
 ## Javadocs
-The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/branch/master/de.btobastian.sdcf4j$sdcf4j-core/javadoc/)
+The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/)
 
 Thanks to ketrwu, too.
 
