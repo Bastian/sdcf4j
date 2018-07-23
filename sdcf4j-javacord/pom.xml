@@ -76,16 +76,15 @@
         </dependency>
         <!-- Javacord -->
         <dependency>
-            <groupId>de.btobastian.Javacord</groupId>
+            <groupId>com.github.Javacord.Javacord</groupId>
             <artifactId>javacord-api</artifactId>
-            <version>d6940c5</version>
+            <version>c1d5429</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Javacord -->
         <dependency>
-            <groupId>de.btobastian.Javacord</groupId>
+            <groupId>com.github.Javacord.Javacord</groupId>
             <artifactId>javacord-core</artifactId>
-            <version>d6940c5</version>
+            <version>c1d5429</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
