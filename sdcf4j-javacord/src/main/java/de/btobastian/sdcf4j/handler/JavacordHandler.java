@@ -33,6 +33,7 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
+import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.core.util.logging.LoggerUtil;
 
 import java.lang.reflect.Method;
@@ -54,7 +55,7 @@ public class JavacordHandler extends CommandHandler {
      * @param api The api.
      */
     public JavacordHandler(DiscordApi api) {
-        api.addMessageCreateListener(event -> handleMessageCreate(api, event.getMessage()));
+        api.addMessageCreateListener(event -> handleMessageCreate(api, event));
     }
 
     /**
@@ -82,9 +83,10 @@ public class JavacordHandler extends CommandHandler {
      * Handles a received message.
      *
      * @param api The api.
-     * @param message The received message.
+     * @param event The received event.
      */
-    private void handleMessageCreate(DiscordApi api, final Message message) {
+    private void handleMessageCreate(DiscordApi api, final MessageCreateEvent event) {
+        Message message = event.getMessage();
         if (message.getUserAuthor().map(User::isYourself).orElse(false)) {
             return;
         }
@@ -120,7 +122,7 @@ public class JavacordHandler extends CommandHandler {
             }
             return;
         }
-        final Object[] parameters = getParameters(splitMessage, command, message, api);
+        final Object[] parameters = getParameters(splitMessage, command, event, api);
         if (commandAnnotation.async()) {
             final SimpleCommand commandFinal = command;
             api.getThreadPool().getExecutorService().submit(() -> invokeMethod(commandFinal, message, parameters));
@@ -155,11 +157,12 @@ public class JavacordHandler extends CommandHandler {
      *
      * @param splitMessage The spit message (index 0: command, index > 0: arguments)
      * @param command The command.
-     * @param message The original message.
+     * @param event The received event.
      * @param api The api.
      * @return The parameters which are used to invoke the executor's method.
      */
-    private Object[] getParameters(String[] splitMessage, SimpleCommand command, Message message, DiscordApi api) {
+    private Object[] getParameters(String[] splitMessage, SimpleCommand command, MessageCreateEvent event, DiscordApi api) {
+        Message message = event.getMessage();
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
         Class<?>[] parameterTypes = command.getMethod().getParameterTypes();
         final Object[] parameters = new Object[parameterTypes.length];
@@ -177,6 +180,8 @@ public class JavacordHandler extends CommandHandler {
                 }
             } else if (type == String[].class) {
                 parameters[i] = args;
+            } else if (type == MessageCreateEvent.class) {
+                parameters[i] = event;
             } else if (type == Message.class) {
                 parameters[i] = message;
             } else if (type == DiscordApi.class) {
