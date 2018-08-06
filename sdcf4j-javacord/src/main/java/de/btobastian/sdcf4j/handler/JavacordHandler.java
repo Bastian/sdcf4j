@@ -110,7 +110,7 @@ public class JavacordHandler extends CommandHandler {
         Command commandAnnotation = command.getCommandAnnotation();
         if (commandAnnotation.requiresMention()) {
             Matcher matcher = USER_MENTION.matcher(commandString);
-            if (!matcher.find() || matcher.group("id").equals(api.getYourself().getIdAsString())) {
+            if (!matcher.find() || !matcher.group("id").equals(api.getYourself().getIdAsString())) {
                 return;
             }
         }

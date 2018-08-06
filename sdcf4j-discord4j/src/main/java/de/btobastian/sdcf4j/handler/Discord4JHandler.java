@@ -98,7 +98,7 @@ public class Discord4JHandler extends CommandHandler {
         Command commandAnnotation = command.getCommandAnnotation();
         if (commandAnnotation.requiresMention()) {
             Matcher matcher = USER_MENTION.matcher(commandString);
-            if (!matcher.find() || matcher.group("id").equals(event.getClient().getOurUser().getStringID())) {
+            if (!matcher.find() || !matcher.group("id").equals(event.getClient().getOurUser().getStringID())) {
                 return;
             }
         }
