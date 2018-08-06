@@ -59,14 +59,6 @@
         </plugins>
     </build>
 
-    <repositories>
-        <!-- Javacord uses Jitpack -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <!-- The core module -->
         <dependency>
@@ -76,15 +68,15 @@
         </dependency>
         <!-- Javacord -->
         <dependency>
-            <groupId>com.github.Javacord.Javacord</groupId>
+            <groupId>org.javacord</groupId>
             <artifactId>javacord-api</artifactId>
-            <version>c1d5429</version>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Javacord.Javacord</groupId>
+            <groupId>org.javacord</groupId>
             <artifactId>javacord-core</artifactId>
-            <version>c1d5429</version>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
