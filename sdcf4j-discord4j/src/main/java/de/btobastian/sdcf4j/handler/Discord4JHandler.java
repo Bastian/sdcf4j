@@ -48,12 +48,7 @@ public class Discord4JHandler extends CommandHandler {
      * @param client The discord client.
      */
     public Discord4JHandler(IDiscordClient client) {
-        client.getDispatcher().registerListener(new IListener<MessageReceivedEvent> () {
-            @Override
-            public void handle(MessageReceivedEvent event) {
-                handleMessageCreate(event);
-            }
-        });
+        client.getDispatcher().registerListener((IListener<MessageReceivedEvent>) this::handleMessageCreate);
     }
 
     /**

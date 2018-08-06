@@ -59,14 +59,6 @@
         </plugins>
     </build>
 
-    <repositories>
-        <!-- Discord4J uses Jitpack -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <!-- The core module -->
         <dependency>
@@ -76,10 +68,9 @@
         </dependency>
         <!-- Discord4J -->
         <dependency>
-            <groupId>com.github.austinv11</groupId>
-            <artifactId>Discord4j</artifactId>
-            <version>2.10.0</version>
-            <scope>provided</scope>
+            <groupId>com.discord4j</groupId>
+            <artifactId>Discord4J</artifactId>
+            <version>2.10.1</version>
         </dependency>
     </dependencies>
 
