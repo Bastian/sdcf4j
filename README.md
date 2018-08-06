@@ -1,4 +1,4 @@
-# sdcf4j <a href="#"><img src="https://img.shields.io/github/release/BtoBastian/sdcf4j.svg?colorB=brightgreen&label=Version" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/"><img src="https://img.shields.io/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://img.shields.io/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
+# sdcf4j <a href="#"><img src="https://shields.javacord.org/github/release/BtoBastian/sdcf4j.svg?colorB=brightgreen&label=Version" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/"><img src="https://shields.javacord.org/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://shields.javacord.org/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
 
 Sdcf4j is a **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J). It helps you creating commands within seconds in a clean and simple way.
 
@@ -33,7 +33,7 @@ public String onPingCommand() {
 ```
 Make sure to replace `%version%` with the latest version number, e.g. `v1.0.0` (don't use this one!).
 
-Latest version: <a href="#"><img src="https://img.shields.io/github/release/BtoBastian/sdcf4j.svg?colorB=brightgreen&label=Version" alt="Latest version"></a>
+Latest version: <a href="#"><img src="https://shields.javacord.org/github/release/BtoBastian/sdcf4j.svg?colorB=brightgreen&label=Version" alt="Latest version"></a>
 ## Support
  
 * [Javacord server](https://discord.gg/0qJ2jjyneLEgG7y3)
@@ -47,7 +47,7 @@ For those of you how don't use maven: [Jenkins](http://ci.ketrwu.de/job/sdcf4j/b
 Thanks to ketrwu (https://github.com/KennethWussmann).
 
 ## Javadocs
-The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/branch/master/de.btobastian.sdcf4j$sdcf4j-core/javadoc/)
+The javadocs can be found here: [JavaDocs](http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/)
 
 Thanks to ketrwu, too.
 
