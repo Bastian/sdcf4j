@@ -33,6 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.regex.Matcher;
 
 /**
  * A command handler for the JDA library.
@@ -106,8 +107,11 @@ public class JDA3Handler extends CommandHandler {
             }
         }
         Command commandAnnotation = command.getCommandAnnotation();
-        if (commandAnnotation.requiresMention() && !commandString.equals(jda.getSelfUser().getAsMention())) {
-            return;
+        if (commandAnnotation.requiresMention()) {
+            Matcher matcher = USER_MENTION.matcher(commandString);
+            if (!matcher.find() || matcher.group("id").equals(jda.getSelfUser().getId())) {
+                return;
+            }
         }
         if (event.isFromType(ChannelType.PRIVATE) && !commandAnnotation.privateMessages()) {
             return;
@@ -241,8 +245,9 @@ public class JDA3Handler extends CommandHandler {
             return Long.valueOf(arg);
         } catch (NumberFormatException ignored) {}
         // test user
-        if (arg.matches("<@([0-9]*)>")) {
-            String id = arg.substring(2, arg.length() - 1);
+        Matcher matcher = USER_MENTION.matcher(arg);
+        if (matcher.find()) {
+            String id = matcher.group("id");
             User user = jda.getUserById(id);
             if (user != null) {
                 return user;

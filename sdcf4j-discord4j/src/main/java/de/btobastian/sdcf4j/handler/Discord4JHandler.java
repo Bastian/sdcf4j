@@ -36,6 +36,7 @@ import sx.blah.discord.util.RateLimitException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.regex.Matcher;
 
 /**
  * A command handler for the Discord4J library.
@@ -95,9 +96,11 @@ public class Discord4JHandler extends CommandHandler {
             }
         }
         Command commandAnnotation = command.getCommandAnnotation();
-        if (commandAnnotation.requiresMention() &&
-                !commandString.equals("<@" + event.getClient().getOurUser().getStringID() + ">")) {
-            return;
+        if (commandAnnotation.requiresMention()) {
+            Matcher matcher = USER_MENTION.matcher(commandString);
+            if (!matcher.find() || matcher.group("id").equals(event.getClient().getOurUser().getStringID())) {
+                return;
+            }
         }
         if (event.getMessage().getChannel().isPrivate() && !commandAnnotation.privateMessages()) {
             return;
@@ -225,8 +228,9 @@ public class Discord4JHandler extends CommandHandler {
             return Long.valueOf(arg);
         } catch (NumberFormatException ignored) {}
         // test user
-        if (arg.matches("<@([0-9]*)>")) {
-            String id = arg.substring(2, arg.length() - 1);
+        Matcher matcher = USER_MENTION.matcher(arg);
+        if (matcher.find()) {
+            String id = matcher.group("id");
             IUser user = client.getUserByID(Long.valueOf(id));
             if (user != null) {
                 return user;
