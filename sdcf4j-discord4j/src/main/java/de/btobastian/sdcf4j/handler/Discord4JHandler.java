@@ -175,7 +175,9 @@ public class Discord4JHandler extends CommandHandler {
                 }
             } else if (type == String[].class) {
                 parameters[i] = args;
-            } else if (type == IMessage.class) {
+            } else if (type == MessageReceivedEvent.class) {
+                parameters[i] = event;
+            }  else if (type == IMessage.class) {
                 parameters[i] = event.getMessage();
             } else if (type == IDiscordClient.class) {
                 parameters[i] = event.getClient();
