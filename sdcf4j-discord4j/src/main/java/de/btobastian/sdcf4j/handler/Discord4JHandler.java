@@ -198,7 +198,7 @@ public class Discord4JHandler extends CommandHandler {
     }
 
     /**
-     * Tries to get objects (like channel, user, integer) from the given strings.
+     * Tries to get objects (like channel, user, long) from the given strings.
      *
      * @param client The client.
      * @param args The string array.
@@ -213,7 +213,7 @@ public class Discord4JHandler extends CommandHandler {
     }
 
     /**
-     * Tries to get an object (like channel, user, integer) from the given string.
+     * Tries to get an object (like channel, user, long) from the given string.
      *
      * @param client The client.
      * @param arg The string.

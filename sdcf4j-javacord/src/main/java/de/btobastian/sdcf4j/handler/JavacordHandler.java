@@ -215,7 +215,7 @@ public class JavacordHandler extends CommandHandler {
     }
 
     /**
-     * Tries to get objects (like channel, user, integer) from the given strings.
+     * Tries to get objects (like channel, user, long) from the given strings.
      *
      * @param api The api.
      * @param args The string array.
@@ -230,7 +230,7 @@ public class JavacordHandler extends CommandHandler {
     }
 
     /**
-     * Tries to get an object (like channel, user, integer) from the given string.
+     * Tries to get an object (like channel, user, long) from the given string.
      *
      * @param api The api.
      * @param arg The string.

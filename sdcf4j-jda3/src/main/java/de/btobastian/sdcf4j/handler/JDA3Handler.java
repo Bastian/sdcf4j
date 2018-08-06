@@ -214,7 +214,7 @@ public class JDA3Handler extends CommandHandler {
     }
 
     /**
-     * Tries to get objects (like channel, user, integer) from the given strings.
+     * Tries to get objects (like channel, user, long) from the given strings.
      *
      * @param jda The jda object.
      * @param args The string array.
@@ -229,7 +229,7 @@ public class JDA3Handler extends CommandHandler {
     }
 
     /**
-     * Tries to get an object (like channel, user, integer) from the given string.
+     * Tries to get an object (like channel, user, long) from the given string.
      *
      * @param jda The jda object.
      * @param arg The string.
