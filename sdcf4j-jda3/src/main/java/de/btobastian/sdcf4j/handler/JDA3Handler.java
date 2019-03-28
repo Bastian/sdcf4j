@@ -23,6 +23,7 @@ import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
 import net.dv8tion.jda.client.entities.Group;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -32,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.regex.Matcher;
 
 /**
@@ -153,7 +153,13 @@ public class JDA3Handler extends CommandHandler {
             logger.warn("An error occurred while invoking method {}!", method.getName(), e);
         }
         if (reply != null) {
-            event.getChannel().sendMessage(String.valueOf(reply)).queue();
+            if (reply instanceof MessageEmbed) {
+                event.getChannel().sendMessage((MessageEmbed) reply).queue();
+            } else if (reply instanceof MessageBuilder) {
+                ((MessageBuilder) reply).sendTo(event.getChannel()).queue();
+            } else {
+                event.getChannel().sendMessage(String.valueOf(reply)).queue();
+            }
         }
     }
 
