@@ -1,30 +1,28 @@
 /*
- * Copyright (C) 2016 Bastian Oppermann
- * 
- * This file is part of SDCF4J.
- * 
- * Javacord is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser general Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- * 
- * SDCF4J is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- * 
+ * Copyright (C) 2021 Nocturlab
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
+
 package de.btobastian.sdcf4j.handler;
+
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.regex.Matcher;
 
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.Sdcf4jMessage;
+import discord4j.common.util.Snowflake;
+import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Channel;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -33,23 +31,18 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.regex.Matcher;
-
 /**
  * A command handler for the Discord4J library.
  */
-public class Discord4JHandler extends CommandHandler {
+public class KaedeCommandHandler extends CommandHandler {
 
     /**
      * Creates a new instance of this class.
      *
      * @param client The discord client.
      */
-    public Discord4JHandler(IDiscordClient client) {
-        client.getDispatcher().registerListener((IListener<MessageReceivedEvent>) this::handleMessageCreate);
+    public KaedeCommandHandler(GatewayDiscordClient client) {
+        client.on(MessageCreateEvent.class).subscribe(this::handleMessageCreate);
     }
 
     /**
@@ -58,8 +51,8 @@ public class Discord4JHandler extends CommandHandler {
      * @param user The user.
      * @param permission The permission to add.
      */
-    public void addPermission(IUser user, String permission) {
-        addPermission(user.getStringID(), permission);
+    public void addPermission(User user, String permission) {
+        addPermission(user.getId().asString(), permission);
     }
 
     /**
@@ -69,8 +62,8 @@ public class Discord4JHandler extends CommandHandler {
      * @param permission The permission to check.
      * @return If the user has the given permission.
      */
-    public boolean hasPermission(IUser user, String permission) {
-        return hasPermission(user.getStringID(), permission);
+    public boolean hasPermission(User user, String permission) {
+        return hasPermission(user.getId().asString(), permission);
     }
 
     /**
@@ -78,7 +71,7 @@ public class Discord4JHandler extends CommandHandler {
      *
      * @param event The MessageReceivedEvent.
      */
-    private void handleMessageCreate(final MessageReceivedEvent event) {
+    private void handleMessageCreate(final MessageCreateEvent event) {
         String[] splitMessage = event.getMessage().getContent().split("[\\s&&[^\\n]]++");
         String commandString = splitMessage[0];
         SimpleCommand command = commands.get(commandString.toLowerCase());
@@ -98,20 +91,24 @@ public class Discord4JHandler extends CommandHandler {
         Command commandAnnotation = command.getCommandAnnotation();
         if (commandAnnotation.requiresMention()) {
             Matcher matcher = USER_MENTION.matcher(commandString);
-            if (!matcher.find() || !matcher.group("id").equals(event.getClient().getOurUser().getStringID())) {
+            if (!matcher.find() || !matcher.group("id").equals(event.getClient().getSelfId())) {
                 return;
             }
         }
-        if (event.getMessage().getChannel().isPrivate() && !commandAnnotation.privateMessages()) {
+        if (!commandAnnotation.privateMessages()) {
             return;
         }
-        if (!event.getMessage().getChannel().isPrivate() && !commandAnnotation.channelMessages()) {
+        if (!commandAnnotation.channelMessages()) {
             return;
         }
-        if (!hasPermission(event.getMessage().getAuthor(), commandAnnotation.requiredPermissions())) {
+        if (!event.getMessage().getAuthor().isPresent()){
+            return;
+        }
+
+        if (!hasPermission(event.getMessage().getAuthor().get(), commandAnnotation.requiredPermissions())) {
             if (Sdcf4jMessage.MISSING_PERMISSIONS.getMessage() != null) {
                 try {
-                    event.getMessage().getChannel().sendMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage());
+                    event.getMessage().getChannel().block().createMessage(Sdcf4jMessage.MISSING_PERMISSIONS.getMessage()).block();
                 } catch (MissingPermissionsException | RateLimitException | DiscordException ignored) { }
             }
             return;
@@ -136,7 +133,7 @@ public class Discord4JHandler extends CommandHandler {
      * @param event The event.
      * @param parameters The parameters for the method.
      */
-    private void invokeMethod(SimpleCommand command, MessageReceivedEvent event, Object[] parameters) {
+    private void invokeMethod(SimpleCommand command, MessageCreateEvent event, Object[] parameters) {
         Method method = command.getMethod();
         Object reply = null;
         try {
@@ -147,7 +144,7 @@ public class Discord4JHandler extends CommandHandler {
         }
         if (reply != null) {
             try {
-                event.getMessage().getChannel().sendMessage(String.valueOf(reply));
+                event.getMessage().getChannel().block().createMessage(String.valueOf(reply)).block();
             } catch (MissingPermissionsException | RateLimitException | DiscordException ignored) { }
         }
     }
@@ -160,7 +157,7 @@ public class Discord4JHandler extends CommandHandler {
      * @param event The event.
      * @return The parameters which are used to invoke the executor's method.
      */
-    private Object[] getParameters(String[] splitMessage, SimpleCommand command, MessageReceivedEvent event) {
+    private Object[] getParameters(String[] splitMessage, SimpleCommand command, MessageCreateEvent event) {
         String[] args = Arrays.copyOfRange(splitMessage, 1, splitMessage.length);
         Class<?>[] parameterTypes = command.getMethod().getParameterTypes();
         final Object[] parameters = new Object[parameterTypes.length];
@@ -178,7 +175,7 @@ public class Discord4JHandler extends CommandHandler {
                 }
             } else if (type == String[].class) {
                 parameters[i] = args;
-            } else if (type == MessageReceivedEvent.class) {
+            } else if (type == MessageCreateEvent.class) {
                 parameters[i] = event;
             }  else if (type == IMessage.class) {
                 parameters[i] = event.getMessage();
@@ -189,7 +186,7 @@ public class Discord4JHandler extends CommandHandler {
             } else if (type == IUser.class) {
                 parameters[i] = event.getMessage().getAuthor();
             } else if (type == IGuild.class) {
-                parameters[i] = event.getMessage().getChannel().getGuild();
+                parameters[i] = event.getMessage().getGuild();
             } else if (type == Object[].class) {
                 parameters[i] = getObjectsFromString(event.getClient(), args);
             } else {
@@ -207,7 +204,7 @@ public class Discord4JHandler extends CommandHandler {
      * @param args The string array.
      * @return An object array.
      */
-    private Object[] getObjectsFromString(IDiscordClient client, String[] args) {
+    private Object[] getObjectsFromString(GatewayDiscordClient client, String[] args) {
         Object[] objects = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             objects[i] = getObjectFromString(client, args[i]);
@@ -222,7 +219,7 @@ public class Discord4JHandler extends CommandHandler {
      * @param arg The string.
      * @return The object.
      */
-    private Object getObjectFromString(IDiscordClient client, String arg) {
+    private Object getObjectFromString(GatewayDiscordClient client, String arg) {
         try {
             // test long
             return Long.valueOf(arg);
@@ -231,7 +228,7 @@ public class Discord4JHandler extends CommandHandler {
         Matcher matcher = USER_MENTION.matcher(arg);
         if (matcher.find()) {
             String id = matcher.group("id");
-            IUser user = client.getUserByID(Long.valueOf(id));
+            User user = client.getUserById(Snowflake.of(id)).block();
             if (user != null) {
                 return user;
             }
@@ -239,7 +236,7 @@ public class Discord4JHandler extends CommandHandler {
         // test channel
         if (arg.matches("<#([0-9]*)>")) {
             String id = arg.substring(2, arg.length() - 1);
-            IChannel channel = client.getChannelByID(Long.valueOf(id));
+            Channel channel = client.getChannelById(Snowflake.of(id)).block();
             if (channel != null) {
                 return channel;
             }
