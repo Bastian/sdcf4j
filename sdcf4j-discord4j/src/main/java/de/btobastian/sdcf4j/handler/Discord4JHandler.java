@@ -1,6 +1,39 @@
 /*
- * Copyright (C) 2021 Nocturlab
- *
+ * Copyright (C) 2016 Bastian Oppermann updated to Discord4J 3.2.0-M2 by Nocturlab
+ * Example :
+    public void run() {
+        DiscordClientBuilder.create(System.getenv("token"))
+        .build()
+        .gateway()
+        .setStore(Store.fromLayout(LegacyStoreLayout.of(
+            RedisStoreService.builder().redisClient(RedisClient.create(RedisURI.create(this.redisHost, this.redisPort))).build()
+        ))).withGateway(client -> client.on(ReadyEvent.class)
+            .doOnNext(ready -> {
+                logger.info("Logged in as {}", ready.getSelf().getUsername());
+                logger.info("Sharding: "+gateway.getGatewayClientGroup().getShardCount());
+                
+                CommandHandler handler = new KaedeDiscordHandler(client);
+                // `Commands.java` contain all commands.
+                handler.registerCommand(new Commands());
+            })
+            .then())
+        .block();
+
+        gateway.onDisconnect().block();
+    }
+ * 
+ * This file is part of SDCF4J.
+ * 
+ * Javacord is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser general Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ * 
+ * SDCF4J is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,14 +67,14 @@ import sx.blah.discord.util.RateLimitException;
 /**
  * A command handler for the Discord4J library.
  */
-public class KaedeCommandHandler extends CommandHandler {
+public class Discord4JHandler extends CommandHandler {
 
     /**
      * Creates a new instance of this class.
      *
      * @param client The discord client.
      */
-    public KaedeCommandHandler(GatewayDiscordClient client) {
+    public Discord4JHandler(GatewayDiscordClient client) {
         client.on(MessageCreateEvent.class).subscribe(this::handleMessageCreate);
     }
 
