@@ -1,4 +1,10 @@
-# sdcf4j <a href="#"><img src="https://shields.javacord.org/github/release/BtoBastian/sdcf4j.svg?colorB=brightgreen&label=Version" alt="Latest version"></a> <a href="http://ci.ketrwu.de/job/sdcf4j/job/master/javadoc/"><img src="https://shields.javacord.org/badge/JavaDoc-latest-yellow.svg" alt="Latest JavaDocs"></a> <a href="https://github.com/BtoBastian/sdcf4j/wiki"><img src="https://shields.javacord.org/badge/Wiki-Home-red.svg" alt="Latest JavaDocs"></a>
+**⚠️ DEPRECATION WARNING ⚠️**
+
+This project is no longer actively maintained.
+
+**⚠️ DEPRECATION WARNING ⚠️**
+
+# sdcf4j
 
 Sdcf4j is a **s**imple **D**iscord **c**ommand **f**ramework **for** **J**ava, supporting [Javacord](https://github.com/BtoBastian/Javacord), [JDA](https://github.com/DV8FromTheWorld/JDA) and [Discord4J](https://github.com/austinv11/Discord4J). It helps you creating commands within seconds in a clean and simple way.
 
@@ -103,3 +109,4 @@ CommandHandler cmdHandler = new Discord4JHandler(client);
 // register the command
 cmdHandler.registerCommand(new PingCommand());
 ```
+
