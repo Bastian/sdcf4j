@@ -24,12 +24,14 @@ import de.btobastian.sdcf4j.Sdcf4jMessage;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
@@ -147,7 +149,13 @@ public class Discord4JHandler extends CommandHandler {
         }
         if (reply != null) {
             try {
-                event.getMessage().getChannel().sendMessage(String.valueOf(reply));
+                if (reply instanceof EmbedObject) {
+                    event.getMessage().getChannel().sendMessage((EmbedObject) reply);
+                } else if (reply instanceof MessageBuilder) {
+                    ((MessageBuilder) reply).withChannel(event.getChannel()).send();
+                } else {
+                    event.getMessage().getChannel().sendMessage(String.valueOf(reply));
+                }
             } catch (MissingPermissionsException | RateLimitException | DiscordException ignored) { }
         }
     }

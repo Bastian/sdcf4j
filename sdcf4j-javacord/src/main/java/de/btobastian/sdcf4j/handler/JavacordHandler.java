@@ -31,6 +31,8 @@ import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAuthor;
+import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
@@ -152,7 +154,13 @@ public class JavacordHandler extends CommandHandler {
             logger.warn("An error occurred while invoking method {}!", method.getName(), e);
         }
         if (reply != null) {
-            message.getChannel().sendMessage(String.valueOf(reply));
+            if (reply instanceof EmbedBuilder) {
+                message.getChannel().sendMessage((EmbedBuilder) reply);
+            } else if (reply instanceof MessageBuilder) {
+                ((MessageBuilder) reply).send(message.getChannel());
+            } else {
+                message.getChannel().sendMessage(String.valueOf(reply));
+            }
         }
     }
 
