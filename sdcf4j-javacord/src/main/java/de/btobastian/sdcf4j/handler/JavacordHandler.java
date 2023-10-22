@@ -24,7 +24,6 @@ import de.btobastian.sdcf4j.Sdcf4jMessage;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.Channel;
-import org.javacord.api.entity.channel.GroupChannel;
 import org.javacord.api.entity.channel.PrivateChannel;
 import org.javacord.api.entity.channel.ServerChannel;
 import org.javacord.api.entity.channel.ServerTextChannel;
@@ -192,8 +191,6 @@ public class JavacordHandler extends CommandHandler {
                 parameters[i] = api;
             } else if (type == Channel.class) {
                 parameters[i] = message.getChannel();
-            } else if (type == GroupChannel.class) {
-                parameters[i] = message.getChannel().asGroupChannel().orElse(null);
             } else if (type == PrivateChannel.class) {
                 parameters[i] = message.getChannel().asPrivateChannel().orElse(null);
             } else if (type == ServerChannel.class) {
